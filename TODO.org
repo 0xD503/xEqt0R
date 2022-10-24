@@ -1,0 +1,6 @@
+#+title: TODO
+
+1. add more visibility specifiers (pub/prot/priv)
+2. uncomment commented in RegFile
+3. Do ALL the TODO's in code (just grep through it with TODO)
+4. Pack all the structs that should be packed
