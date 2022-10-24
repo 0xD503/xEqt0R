@@ -13,7 +13,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ## flags
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
+#set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -Og")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 ## default cfg (can be changed during build through cmdline arg)
@@ -21,4 +22,10 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 
 add_executable(executor
-  ./src/main.cpp)
+  ./src/main.cpp
+  ./src/soc.cpp
+  ./src/cpu.cpp
+  ./src/memory.cpp
+  ./src/register_file.cpp
+  ./src/register.cpp
+  )

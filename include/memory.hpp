@@ -1,22 +1,29 @@
 #ifndef MEMORY_H_
 #define MEMORY_H_
 
-//#include <stddef>
-#include <array>
+#include <cstddef>
+#include <vector>
+
+#include "arch.hpp"
 
 
 template<typename T>
 class Memory {
     public:
-        //getCap
+        explicit Memory<T>(size_t len);
+        virtual ~Memory(void);
+
+
+        inline size_t getCap (void) const    { return (_capacity); }
 
     protected:
-        size_t _capacity;
-        std::array<T, _capacity> _memory;
+        const size_t _length;    /// size in data words
+        size_t _capacity;                   /// mem size in bytes
+        std::vector<T> _memory;
 
     private:
         //
-}
+};
 
 
 #endif // MEMORY_H_

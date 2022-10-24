@@ -1,6 +1,19 @@
 #include "register_file.hpp"
 
 
+RegisterFile::RegisterFile(size_t len) :
+    _length(len), _file()
+{
+    //
+}
+
+RegisterFile::~RegisterFile(void)
+{
+    //
+}
+
+
+
 template<typename T>
 RegisterFile::writeRegister (size_t reg, T val)
 {

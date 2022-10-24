@@ -1,11 +1,16 @@
-#include "instruction.hpp"
-//#include "isa.hpp"
-#include "execute.hpp"
+#include "arch.hpp"
+#include "soc.hpp"
+
+
+static constexpr size_t memLen = 2 << 31;
 
 
 int main (int argc, char *argv[])
 {
-    Instruction instr{};
+    SoC<archBitDepth, addr_t> soc(memLen);
+
+//    soc.run();
+
 
     while (true)
     {

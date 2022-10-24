@@ -1,14 +1,16 @@
 #ifndef __REGISTER_H__
 #define __REGISTER_H__
 
-//
+#include <cstddef>
 
 
 template<typename T>
 class Register {
     public:
         explicit Register(T val) :
-            _value(val) { };
+            _value(val) { }
+        Register(void) :
+            _value() { };
         virtual ~Register(void) = default;
 
         void write (T val);

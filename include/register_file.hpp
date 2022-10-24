@@ -3,15 +3,16 @@
 
 #include <array>
 
+#include "arch.hpp"
+#include "bit.hpp"
 #include "register.hpp"
 
 
 template<typename T>
 class RegisterFile {
     public:
-        explicit RegisterFile<T>(size_t len) :
-            _length(len), _file(0) { }
-        virtual ~RegisterFile(void) = default;
+        explicit RegisterFile(size_t len);
+        virtual ~RegisterFile(void);
 
         void writeRegister (size_t reg, T val);
         void writeRegisterBit (size_t reg, size_t bitIndex, Bit_t val);
@@ -19,7 +20,7 @@ class RegisterFile {
         T readRegisterBit (size_t reg, size_t bitIndex) const;
 
     protected:
-        const size_t _length;
+        static constexpr size_t _length = REGISTERS::RegsNumber;
         std::array<Register<T>, _length> _file;
 
     private:
