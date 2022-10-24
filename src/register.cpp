@@ -4,43 +4,55 @@
 
 
 template<typename T>
-Register::write (T val)
+Register<T>::Register(T val) :
+    _value(val)
 {
-    _value = val;
-}
-
-Register::writeBit (size_t bitIndex, Bit_t val)
-{
-    static_assert(bitIndex < (sizeof(_value) * 8), "bit index >= sizeof(_value)");
-    //if (bitIndex < (sizeof(_value) * 8))
-    //{
-        if (val == Bit_t::LOGICAL_ONE) {
-            _value |= 1 << bitIndex;
-        }
-        else {
-            _value &= ~(1 << bitIndex);
-        }
-    //}
+    //
 }
 
 template<typename T>
-T Register::read (void) const
+Register<T>::Register(void) :
+    _value()
+{
+    //
+}
+
+
+// template<typename T>
+// Register<T>::write (T val)
+// {
+//     _value = val;
+// }
+
+// template<typename T>
+// Register<T>::writeBit (size_t bitIndex, Bit_t val)
+// {
+//     /// TODO: make bitIndex boundary check
+
+//     if (val == Bit_t::LOGICAL_ONE) {
+//         _value |= 1 << bitIndex;
+//     }
+//     else {
+//         _value &= ~(1 << bitIndex);
+//     }
+// }
+
+template<typename T>
+T Register<T>::read (void) const
 {
     return (_value);
 }
 
-Bit_t Register::readBit (size_t bitIndex) const
+template<typename T>
+Bit_t Register<T>::readBit (size_t bitIndex) const
 {
-    static_assert(bitIndex < (sizeof(_value) * 8), "bit index >= sizeof(_value)");
+    /// TODO: make bitIndex boundary check
 
     Bit_t bit = Bit_t::LOGICAL_ZERO;
-    //if (bitIndex < (sizeof(_value) * 8))
-    //{
-        if ((_value & (1 << bitIndex)) != 0)
-        {
-            bit = Bit_t::LOGICAL_ONE;
-        };
-    //}
+    if ((_value & (1 << bitIndex)) != 0)
+    {
+        bit = Bit_t::LOGICAL_ONE;
+    };
 
     return (bit);
 }

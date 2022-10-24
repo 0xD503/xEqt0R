@@ -10,15 +10,15 @@
 template<typename T>
 class Memory {
     public:
-        explicit Memory<T>(size_t len);
+        explicit Memory(size_t len);
         virtual ~Memory(void);
 
 
-        inline size_t getCap (void) const    { return (_capacity); }
+        inline size_t getCapacity (void) const    { return (_length); }
 
     protected:
-        const size_t _length;    /// size in data words
-        size_t _capacity;                   /// mem size in bytes
+        const size_t _length;    /// mem size in data words
+        size_t _size;            /// mem size in bytes
         std::vector<T> _memory;
 
     private:

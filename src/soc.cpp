@@ -2,19 +2,21 @@
 
 
 template<typename T, typename M>
-SoC::SoC(size_t len) :
+SoC<T, M>::SoC(size_t len) :
     _cpu(), _memory(len)
 {
     //
 }
 
-SoC::~SoC(void)
+template<typename T, typename M>
+SoC<T, M>::~SoC(void)
 {
     //
 }
 
 
-void SoC::run (void)
+template<typename T, typename M>
+void SoC<T, M>::run (void)
 {
     //
 }

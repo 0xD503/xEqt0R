@@ -3,13 +3,15 @@
 
 
 template<typename T>
-Memory::Memory(size_t len) :
-    _length(len)
+Memory<T>::Memory(size_t len) :
+    _length(len), _size(_length * sizeof(T)),
+    _memory(_length)
 {
     //
 }
 
-Memory::~Memory(void)
+template<typename T>
+Memory<T>::~Memory(void)
 {
     //
 }

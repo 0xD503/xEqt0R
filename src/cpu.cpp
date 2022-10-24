@@ -2,24 +2,47 @@
 #include "arch.hpp"
 
 
-CPU::CPU(void) :
+template<typename T>
+CPU<T>::CPU(void) :
     _running(false), _registerFile(REGISTERS::RegsNumber)
 {
     //
 }
 
-CPU::~CPU(void)
+template<typename T>
+CPU<T>::~CPU(void)
 {
     //
 }
 
 
-void CPU::run (void)
+template<typename T>
+void CPU<T>::run (void)
 {
-    running = true;
+    _running = true;
 }
 
-Instruction CPU::_fetch (addrt_t addr)
+
+template<typename T>
+Instruction CPU<T>::_fetch (addr_t addr)
+{
+    //
+}
+
+template<typename T>
+void CPU<T>::_decode (Instruction instr)
+{
+    //
+}
+
+template<typename T>
+void CPU<T>::_execute (void)
+{
+    //
+}
+
+template<typename T>
+void CPU<T>::_writeBack (void)
 {
     //
 }

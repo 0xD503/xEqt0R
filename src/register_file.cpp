@@ -1,13 +1,15 @@
 #include "register_file.hpp"
 
 
-RegisterFile::RegisterFile(size_t len) :
-    _length(len), _file()
+template<typename T>
+RegisterFile<T>::RegisterFile(void) :
+    _file()
 {
     //
 }
 
-RegisterFile::~RegisterFile(void)
+template<typename T>
+RegisterFile<T>::~RegisterFile(void)
 {
     //
 }
@@ -15,33 +17,39 @@ RegisterFile::~RegisterFile(void)
 
 
 template<typename T>
-RegisterFile::writeRegister (size_t reg, T val)
+void RegisterFile<T>::writeRegister (size_t reg, T val)
 {
-    static_assert(reg < _length, "regID >= regfile length");
+    /// TODO: make reg index boundary check
+    //static_assert(reg < _length, "regID >= regfile length");
 
     _file.at(reg).write(val);
 }
 
-RegisterFile::writeRegisterBit (size_t reg, size_t bitIndex, Bit_t val)
+template<typename T>
+void RegisterFile<T>::writeRegisterBit (size_t reg, size_t bitIndex, Bit_t val)
 {
-    static_assert(reg < _length, "regID >= regfile length");
-    static_assert(bit < (sizeof(_file[0]) * 8), "bitID >= register size");
+    /// TODO: make reg and bit index boundary check
+    // static_assert(reg < _length, "regID >= regfile length");
+    // static_assert(bit < (sizeof(_file[0]) * 8), "bitID >= register size");
 
     _file.at(reg).writeBit(bitIndex, val);
 }
 
 template<typename T>
-T RegisterFile::readRegister (size_t reg) const
+T RegisterFile<T>::readRegister (REGISTERS reg) const
 {
-    static_assert(reg < _length, "reg index >= regfile length");
+    /// TODO: make reg index boundary check
+    //static_assert(reg < _length, "reg index >= regfile length");
 
     return (_file.at(reg).read());
 }
 
-Bit_t Register::readRegisterBit (size_t reg, size_t bitIndex) const
+template<typename T>
+Bit_t RegisterFile<T>::readRegisterBit (REGISTERS reg, size_t bitIndex) const
 {
-    static_assert(reg < _length, "reg index >= regfile length");
-    static_assert(bitIndex < (sizeof(_value) * 8), "bit index >= sizeof(_value)");
+    /// TODO: make reg and bit index boundary check
+    //static_assert(reg < _length, "reg index >= regfile length");
+    //static_assert(bitIndex < (sizeof(_value) * 8), "bit index >= sizeof(_value)");
 
     //if (reg < _len)
     return (_file.at(reg).readBit(bitIndex));

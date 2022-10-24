@@ -3,12 +3,13 @@
 
 #include "cpu.hpp"
 #include "memory.hpp"
+//#include <cstddef>
 
 
 template<typename T, typename M>
 class SoC {
     public:
-        explicit SoC<T, M>(size_t len);
+        explicit SoC(size_t len);
         virtual ~SoC(void);
 
 

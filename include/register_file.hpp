@@ -2,6 +2,7 @@
 #define __REGISTER_FILE_HPP__
 
 #include <array>
+#include <cstddef>
 
 #include "arch.hpp"
 #include "bit.hpp"
@@ -11,16 +12,17 @@
 template<typename T>
 class RegisterFile {
     public:
-        explicit RegisterFile(size_t len);
+        explicit RegisterFile(void);
         virtual ~RegisterFile(void);
 
+    public:
         void writeRegister (size_t reg, T val);
         void writeRegisterBit (size_t reg, size_t bitIndex, Bit_t val);
-        T readRegister (size_t reg) const;
-        T readRegisterBit (size_t reg, size_t bitIndex) const;
+        T readRegister (REGISTERS reg) const;
+        Bit_t readRegisterBit (REGISTERS reg, size_t bitIndex) const;
 
     protected:
-        static constexpr size_t _length = REGISTERS::RegsNumber;
+        static constexpr size_t _length = (const size_t) REGISTERS::RegsNumber;
         std::array<Register<T>, _length> _file;
 
     private:
