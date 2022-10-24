@@ -10,11 +10,11 @@ class Register {
     public:
         explicit Register(T val);
         Register(void);
-        virtual ~Register(void) = default;
+        ~Register(void);
 
     public:
-        // void write (T val);
-        // void writeBit (size_t index, Bit_t val);
+        void write (T val);
+        void writeBit (size_t index, Bit_t val);
         T read (void) const;
         Bit_t readBit (size_t index) const;
 

@@ -13,6 +13,15 @@ class SoC {
         virtual ~SoC(void);
 
 
+        inline size_t getInstructionMemorySize (void)
+        {
+            return (_memory.getSize());
+        }
+        inline size_t getInstructionMemoryLength (void)
+        {
+            return (_memory.getLength());
+        }
+
         void run (void);
 
     protected:

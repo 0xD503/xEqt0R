@@ -1,5 +1,6 @@
 #include "register.hpp"
 
+#include "arch.hpp"
 #include "bit.hpp"
 
 
@@ -17,25 +18,31 @@ Register<T>::Register(void) :
     //
 }
 
+template<typename T>
+Register<T>::~Register(void)
+{
+    //
+}
 
-// template<typename T>
-// Register<T>::write (T val)
-// {
-//     _value = val;
-// }
 
-// template<typename T>
-// Register<T>::writeBit (size_t bitIndex, Bit_t val)
-// {
-//     /// TODO: make bitIndex boundary check
+template<typename T>
+void Register<T>::write (T val)
+{
+    _value = val;
+}
 
-//     if (val == Bit_t::LOGICAL_ONE) {
-//         _value |= 1 << bitIndex;
-//     }
-//     else {
-//         _value &= ~(1 << bitIndex);
-//     }
-// }
+template<typename T>
+void Register<T>::writeBit (size_t bitIndex, Bit_t val)
+{
+    /// TODO: make bitIndex boundary check
+
+    if (val == Bit_t::LOGICAL_ONE) {
+        _value |= 1 << bitIndex;
+    }
+    else {
+        _value &= ~(1 << bitIndex);
+    }
+}
 
 template<typename T>
 T Register<T>::read (void) const
@@ -56,3 +63,8 @@ Bit_t Register<T>::readBit (size_t bitIndex) const
 
     return (bit);
 }
+
+
+/// Explicit template instantiation. It is done in order to keep template
+/// implementation separately from its declaration
+template class Register<archBitDepth>;

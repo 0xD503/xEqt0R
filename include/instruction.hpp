@@ -14,7 +14,11 @@ class Instruction {
             _instruction(ISA::UNKNOWN) { };
 
 
-        //uint64_t getField (Field type) const;
+        //inline uint64_t getField (Field type) const
+        inline uint64_t getField (void) const
+        {
+            return (_instruction);
+        }
 
     protected:
         uint64_t _instruction;

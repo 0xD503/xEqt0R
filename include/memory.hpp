@@ -14,7 +14,8 @@ class Memory {
         virtual ~Memory(void);
 
 
-        inline size_t getCapacity (void) const    { return (_length); }
+        inline size_t getLength (void) const    { return (_length); }
+        inline size_t getSize (void) const    { return (_size); }
 
     protected:
         const size_t _length;    /// mem size in data words

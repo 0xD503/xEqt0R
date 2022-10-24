@@ -13,11 +13,11 @@ template<typename T>
 class RegisterFile {
     public:
         explicit RegisterFile(void);
-        virtual ~RegisterFile(void);
+        ~RegisterFile(void);
 
     public:
-        void writeRegister (size_t reg, T val);
-        void writeRegisterBit (size_t reg, size_t bitIndex, Bit_t val);
+        void writeRegister (REGISTERS reg, T val);
+        void writeRegisterBit (REGISTERS reg, size_t bitIndex, Bit_t val);
         T readRegister (REGISTERS reg) const;
         Bit_t readRegisterBit (REGISTERS reg, size_t bitIndex) const;
 

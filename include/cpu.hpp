@@ -12,7 +12,11 @@ template<typename T>
 class CPU {
     public:
 
-        static_assert(sizeof(addr_t) <= sizeof(Register<T>), "size of addr " \
+        static_assert(sizeof(i_mem_addr_t) <= sizeof(Register<T>), "size of addr " \
+                                                             "should not be "\
+                                                             "more than reg "\
+                                                             "size");
+        static_assert(sizeof(d_mem_addr_t) <= sizeof(Register<T>), "size of addr " \
                                                              "should not be "\
                                                              "more than reg "\
                                                              "size");

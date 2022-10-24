@@ -4,7 +4,7 @@
 
 template<typename T>
 CPU<T>::CPU(void) :
-    _running(false), _registerFile(REGISTERS::RegsNumber)
+    _running(false), _registerFile()
 {
     //
 }
@@ -46,3 +46,8 @@ void CPU<T>::_writeBack (void)
 {
     //
 }
+
+
+/// Explicit template instantiation. It is done in order to keep template
+/// implementation separately from its declaration
+template class CPU<archBitDepth>;

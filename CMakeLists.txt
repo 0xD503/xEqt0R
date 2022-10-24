@@ -23,21 +23,10 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 add_executable(executor
   ./src/main.cpp
-  # ./src/except.cpp
+  ./src/except.cpp
   ./src/register.cpp
-  # ./src/register_file.cpp
-  # ./src/memory.cpp
-  # ./src/cpu.cpp
-  # ./src/soc.cpp
-
-  # ./include/except.hpp
-  # ./include/register.hpp
-  # ./include/register_file.hpp
-  # ./include/memory.hpp
-  # ./include/cpu.hpp
-  # ./include/soc.hpp
-  # ./include/arch.hpp
-  # ./include/instruction.hpp
-  # ./include/isa.hpp
-  # ./include/bit.hpp
+  ./src/register_file.cpp
+  ./src/memory.cpp
+  ./src/cpu.cpp
+  ./src/soc.cpp
   )
