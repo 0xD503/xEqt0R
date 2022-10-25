@@ -10,8 +10,8 @@ class Instruction {
     public:
         explicit Instruction(uint64_t instr) :
             _instruction(instr) { };
-        Instruction(void) :
-            _instruction(ISA::UNKNOWN) { };
+        //Instruction(void) :
+          //  _instruction(0x00) { };
 
 
         //inline uint64_t getField (Field type) const

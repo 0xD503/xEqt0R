@@ -5,9 +5,10 @@ enum ISA {
     ADD = 1, SUB,
     AND, OR,
     B,
+    MOV,
     LDR, STR,
 
-    UNKNOWN
+    //UNKNOWN
 };
 
 
