@@ -9,18 +9,27 @@
 template<typename T, typename M>
 class SoC {
     public:
+        static_assert(sizeof(i_mem_addr_t) <= sizeof(Register<T>), "size of " \
+                                                             "addr should not "\
+                                                             "be more than "\
+                                                             "reg size");
+        static_assert(sizeof(d_mem_addr_t) <= sizeof(Register<T>), "size of " \
+                                                             "addr should not "\
+                                                             "be more than "\
+                                                             "reg size");
+
         explicit SoC(size_t len);
         virtual ~SoC(void);
 
 
-        inline size_t getInstructionMemorySize (void)
-        {
-            return (_memory.getSize());
-        }
-        inline size_t getInstructionMemoryLength (void)
-        {
-            return (_memory.getLength());
-        }
+        // inline size_t getInstructionMemorySize (void) const
+        // {
+        //     return (_memory.getSize());
+        // }
+        // inline size_t getInstructionMemoryLength (void) const
+        // {
+        //     return (_memory.getLength());
+        // }
 
         void run (void);
 

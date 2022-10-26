@@ -22,8 +22,7 @@ struct Addr_s {
 typedef uint16_t i_mem_addr_t;
 typedef uint32_t d_mem_addr_t;
 typedef struct Addr_s addr_t;
-typedef uint64_t archBitDepth;
-
+typedef uint64_t word;
 
 
 #endif // ARCH_H_

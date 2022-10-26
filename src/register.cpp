@@ -67,4 +67,4 @@ Bit_t Register<T>::readBit (size_t bitIndex) const
 
 /// Explicit template instantiation. It is done in order to keep template
 /// implementation separately from its declaration
-template class Register<archBitDepth>;
+template class Register<word>;

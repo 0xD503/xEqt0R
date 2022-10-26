@@ -24,5 +24,5 @@ void SoC<T, M>::run (void)
 
 /// Explicit template instantiation. It is done in order to keep template
 /// implementation separately from its declaration
-template class SoC<archBitDepth, i_mem_addr_t>;
-template class SoC<archBitDepth, d_mem_addr_t>;
+template class SoC<word, i_mem_addr_t>;
+template class SoC<word, d_mem_addr_t>;

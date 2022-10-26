@@ -1,26 +1,16 @@
 #ifndef __CPU_H__
 #define __CPU_H__
 
-#include "register.hpp"
-#include "register_file.hpp"
-#include "instruction.hpp"
-#include "arch.hpp"
+#include <cstdint>
 
+#include "arch.hpp"
+#include "instruction.hpp"
+#include "register_file.hpp"
 
 
 template<typename T>
 class CPU {
     public:
-
-        static_assert(sizeof(i_mem_addr_t) <= sizeof(Register<T>), "size of addr " \
-                                                             "should not be "\
-                                                             "more than reg "\
-                                                             "size");
-        static_assert(sizeof(d_mem_addr_t) <= sizeof(Register<T>), "size of addr " \
-                                                             "should not be "\
-                                                             "more than reg "\
-                                                             "size");
-
         explicit CPU(void);
         virtual ~CPU(void);
 
@@ -28,15 +18,24 @@ class CPU {
 
     protected:
         bool _running;
+
+        EncodedInstruction_t _encodedInstruction;
+        //INSTRUCTION _instruction;
+        word _result;
         RegisterFile<T> _registerFile;
 
-        Instruction _fetch (addr_t addr);
-        void _decode (Instruction instr);
+    protected:
+        word _flags;
+
+    protected:
+        void _fetch (void);
+        void _decode (void);
         void _execute (void);
         void _writeBack (void);
 
     private:
-        //
+        INSTR_TYPE __decodeOpcode (void);
+        void __prepareDatapath (void);
 };
 
 

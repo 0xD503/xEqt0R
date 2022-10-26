@@ -6,3 +6,5 @@
 5. Add modern C++ starter project
 6. Add interrupts through signals (OR use some lib, like boost, for cross-platform solution)
 7. Clean code from junk before release
+8. Remove excessive constructors
+9. Implement tracing system

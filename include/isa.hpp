@@ -1,7 +1,7 @@
 #ifndef __ISA_HPP__
 #define __ISA_HPP__
 
-enum ISA {
+enum class INSTRUCTION {
     ADD = 1, SUB,
     AND, OR,
     B,
