@@ -102,6 +102,7 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 add_executable(ExEqtOR
   ./src/main.cpp
   ./src/except.cpp
+  ./src/mapping_tables.cpp
   ./src/register.cpp
   ./src/register_file.cpp
   ./src/memory.cpp

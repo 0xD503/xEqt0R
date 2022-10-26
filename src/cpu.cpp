@@ -5,7 +5,7 @@
 template<typename T>
 CPU<T>::CPU(void) :
     _running(false),
-    _encodedInstruction(), /*_instruction(INSTRUCTION::UNKNOWN), */_result(),
+    _encodedInstruction(), _instruction(INSTRUCTION::UNKNOWN), _result(),
     _registerFile()
 {
     //
@@ -176,7 +176,24 @@ INSTR_TYPE CPU<T>::__decodeOpcode (void)
 template<typename T>
 void CPU<T>::__prepareDatapath (void)
 {
-    //DATA_PROC_INS
+    uint_fast8_t switches = _encodedInstruction.field.switches;
+
+    if (switches & ALU_SWITCHES::A) {
+        if (switches & ALU_SWITCHES::E) {
+            _instruction = INSTRUCTION::NEG;    /// binary negation
+        }
+        else {
+            if (switches & ALU_SWITCHES::N) {
+                _instruction = INSTRUCTION::NAND;
+            }
+            else {
+                _instruction = INSTRUCTION::AND;
+            }
+        }
+    }
+    else {
+        //
+    }
 }
 
 

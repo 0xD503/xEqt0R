@@ -20,7 +20,7 @@ class CPU {
         bool _running;
 
         EncodedInstruction_t _encodedInstruction;
-        //INSTRUCTION _instruction;
+        INSTRUCTION _instruction;
         word _result;
         RegisterFile<T> _registerFile;
 
