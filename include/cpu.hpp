@@ -2,6 +2,7 @@
 #define __CPU_H__
 
 #include <cstdint>
+#include <unordered_map>
 
 #include "arch.hpp"
 #include "instruction.hpp"
@@ -36,6 +37,13 @@ class CPU {
     private:
         INSTR_TYPE __decodeOpcode (void);
         void __prepareDatapath (void);
+
+        //INSTRUCTION __getInstruction(uint_fast8_t)
+
+    private:
+        /// Mapping table between Data Processing Instructions and their switches
+        static const std::unordered_map<uint_fast8_t,
+                                        INSTRUCTION> __DPI_MappingTable;
 };
 
 

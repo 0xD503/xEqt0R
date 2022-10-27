@@ -2,7 +2,6 @@
 #define __INSTRUCTION_H__
 
 #include <cstdint>
-#include <map>
 
 #include "arch.hpp"
 
@@ -83,7 +82,8 @@ union EncodedInstruction {
         word reserved_7 : 1;    /// 41
         word destReg    : 5;    /// 46
         word srcReg     : 5;    /// 51
-        word immediate  : 14;   /// 64
+        word srcReg_2   : 5;    ///
+        word immediate  : 9;    /// 64
     };
     struct _field field;
     word data;
