@@ -8,3 +8,4 @@
 7. Clean code from junk before release
 8. Remove excessive constructors
 9. Implement tracing system
+10. Add Dockerfile for test environment

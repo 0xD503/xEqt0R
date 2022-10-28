@@ -1,7 +1,14 @@
 #ifndef ARCH_H_
 #define ARCH_H_
 
+#include <cstddef>
 #include <cstdint>
+
+
+namespace arch {
+    static constexpr size_t REGISTERS_POWER = 8;    /// 2^8 == 256 registers :-D
+    static constexpr size_t REGISTERS_NUM = 1 << REGISTERS_POWER;    /// o_O
+}
 
 
 enum class REGISTERS {

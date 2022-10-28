@@ -180,8 +180,11 @@ INSTR_TYPE CPU<T>::__decodeOpcode (void)
 template<typename T>
 void CPU<T>::__prepareDatapath (void)
 {
-    uint_fast8_t switches = _encodedInstruction.field.switches;
-    _instruction = __DPI_MappingTable.at(switches);
+    /// TODO: check if its shift operation first
+    //uint_fast8_t switches = _encodedInstruction.field.switches;
+    //_instruction = __DPI_MappingTable.at(switches);
+
+
     // if (switches & ALU_SWITCHES::A) {
     //     if (switches & ALU_SWITCHES::E) {
     //         _instruction = INSTRUCTION::NEG;    /// binary negation
@@ -208,8 +211,35 @@ using namespace ALU_SWITCHES;
 /// Mapping table between Data Processing Instructions and their switches
 template<typename T>
 const std::unordered_map<uint_fast8_t, INSTRUCTION> CPU<T>::__DPI_MappingTable = {
+    {~N | ~E | ~L | ~F | ~A, INSTRUCTION::ADD},
+    {~N | ~E | ~L |  F | ~A, INSTRUCTION::FADD},
+    {~N | ~E |  L | ~F | ~A, INSTRUCTION::ORR},
+    {~N | ~E |  L | ~F |  A, INSTRUCTION::AND},
+    {~N |  E | ~L | ~F | ~A, INSTRUCTION::MUL},
+    {~N |  E | ~L |  F | ~A, INSTRUCTION::FMUL},
+    {~N |  E |  L | ~F | ~A, INSTRUCTION::XOR},
+    { N | ~E | ~L | ~F | ~A, INSTRUCTION::SUB},
+    { N | ~E | ~L | ~F |  A, INSTRUCTION::MOV},
+    { N | ~E | ~L |  F | ~A, INSTRUCTION::FSUB},
+    { N | ~E |  L | ~F | ~A, INSTRUCTION::NOR},
+    { N | ~E |  L | ~F |  A, INSTRUCTION::NAND},
+    { N |  E | ~L | ~F | ~A, INSTRUCTION::DIV},
+    { N |  E | ~L |  F | ~A, INSTRUCTION::FDIV},
+    { N |  E |  L | ~F | ~A, INSTRUCTION::NXOR},
+    { N |  E |  L | ~F |  A, INSTRUCTION::NEG},
+};
+
+
+
+/*
+    {~N | ~E | ~L | ~F | ~A |  S | ~S1 |  S2, INSTRUCTION::ASR},   //
+    { N | ~E | ~L | ~F | ~A |  S | ~S1 | ~S2, INSTRUCTION::LSL},   //
+    { N | ~E | ~L | ~F | ~A |  S | ~S1 |  S2, INSTRUCTION::LSR},   //
+    { N | ~E | ~L | ~F | ~A |  S |  S1 | ~S2, INSTRUCTION::ROT},   //
+
+const std::unordered_map<uint_fast8_t, INSTRUCTION> CPU<T>::__DPI_MappingTable = {
     {~N | ~E | ~L | ~F | ~A | ~S | ~S1 | ~S2, INSTRUCTION::ADD},
-    {~N | ~E | ~L | ~F | ~A |  S | ~S1 |  S2, INSTRUCTION::ASR},
+    {~N | ~E | ~L | ~F | ~A |  S | ~S1 |  S2, INSTRUCTION::ASR},   //
     {~N | ~E | ~L |  F | ~A | ~S | ~S1 | ~S2, INSTRUCTION::FADD},
     {~N | ~E |  L | ~F | ~A | ~S | ~S1 | ~S2, INSTRUCTION::ORR},
     {~N | ~E |  L | ~F |  A | ~S | ~S1 | ~S2, INSTRUCTION::AND},
@@ -217,9 +247,9 @@ const std::unordered_map<uint_fast8_t, INSTRUCTION> CPU<T>::__DPI_MappingTable =
     {~N |  E | ~L |  F | ~A | ~S | ~S1 | ~S2, INSTRUCTION::FMUL},
     {~N |  E |  L | ~F | ~A | ~S | ~S1 | ~S2, INSTRUCTION::XOR},
     { N | ~E | ~L | ~F | ~A | ~S | ~S1 | ~S2, INSTRUCTION::SUB},
-    { N | ~E | ~L | ~F | ~A |  S | ~S1 | ~S2, INSTRUCTION::LSL},
-    { N | ~E | ~L | ~F | ~A |  S | ~S1 |  S2, INSTRUCTION::LSR},
-    { N | ~E | ~L | ~F | ~A |  S |  S1 | ~S2, INSTRUCTION::ROT},
+    { N | ~E | ~L | ~F | ~A |  S | ~S1 | ~S2, INSTRUCTION::LSL},   //
+    { N | ~E | ~L | ~F | ~A |  S | ~S1 |  S2, INSTRUCTION::LSR},   //
+    { N | ~E | ~L | ~F | ~A |  S |  S1 | ~S2, INSTRUCTION::ROT},   //
     { N | ~E | ~L | ~F |  A | ~S | ~S1 | ~S2, INSTRUCTION::MOV},
     { N | ~E | ~L |  F | ~A | ~S | ~S1 | ~S2, INSTRUCTION::FSUB},
     { N | ~E |  L | ~F | ~A | ~S | ~S1 | ~S2, INSTRUCTION::NOR},
@@ -230,6 +260,7 @@ const std::unordered_map<uint_fast8_t, INSTRUCTION> CPU<T>::__DPI_MappingTable =
     { N |  E |  L | ~F |  A | ~S | ~S1 | ~S2, INSTRUCTION::NEG},
 };
 
+ */
 
 
 /// Explicit template instantiation. It is done in order to keep template
