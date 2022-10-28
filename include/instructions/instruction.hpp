@@ -8,10 +8,12 @@
 
 //using namespace arch;
 
+/// Mode header
 struct __attribute__((packed)) ModeHead {
     word mode     : 1;
     //word reserved : 1;
 };
+
 
 /// Standart mode header declarations
 struct __attribute__((packed)) ConditonHeadStd {
@@ -19,15 +21,21 @@ struct __attribute__((packed)) ConditonHeadStd {
     word condition : 4;
 };  /// 5 bits here
 
+/// Conditional operations header
 struct __attribute__((packed)) OpCodeHeadStd {
     struct ConditonHeadStd condHead;
     word opCode   : 4;
 };  /// 9 bits here
 
+struct __attribute__((packed)) TargetRegHeadStd {
+    struct OpCodeHeadStd opCodeHead;
+    word targetReg  : arch::REGISTERS_POWER; /// need for most of the instrs
+};  /// 17 bits here
+
+
 /// Data Processing instructions headers
 struct __attribute__((packed)) DataProcTypeHeadStd {
-    struct OpCodeHeadStd opCodeHead;
-    word destReg  : arch::REGISTERS_POWER; /// need for all data processing instrs
+    struct TargetRegHeadStd destRegHead;
     word shamt    : 6;   /// shift amout
     word shift    : 1;   /// shifts always; 1 -shift operand, 0 -shift Imm/src_2
 };  /// 24 bits here
@@ -38,18 +46,24 @@ struct __attribute__((packed)) ALUOpHeadStd {
     word aluOpType : 2;  /// (logical ^ floating ^ !arithmetical)  op. type
     word negate    : 1;  ///
     word extended  : 2;  /// extended instructions support
-    word srcReg_1  : arch::REGISTERS_POWER;
-};  /// 38 bits here
+};  /// 30 bits here
 
 struct __attribute__((packed)) ALUOpStd {
     struct ALUOpHeadStd aluOpType;
+    word srcReg_1  : arch::REGISTERS_POWER;
     word srcReg_2 : arch::REGISTERS_POWER;   ///
 };  /// 46 bits here
 
 struct __attribute__((packed)) ALUOpImmStd {
     struct ALUOpHeadStd aluOpType;
+    word srcReg_1  : arch::REGISTERS_POWER;
     word immediate : 26; ///
 };  /// 64 bits here
+
+// struct __attribute__((packed)) MovOpImmStd {
+//     struct ALUOpHeadStd aluOpType;
+//     word immediate : 34;
+// };
 
 struct __attribute__((packed)) ShiftOpHeadStd {
     struct DataProcTypeHeadStd dataProcType;
@@ -58,7 +72,21 @@ struct __attribute__((packed)) ShiftOpHeadStd {
 };  /// 32 bits here
 
 
-/// Memory manipulating instructions
+
+/// Memory Manipulating instructions
+struct __attribute__((packed)) MemoryManipStd {
+    //struct OpCodeHeadStd opCodeHead;
+    struct TargetRegHeadStd targetRegHead;
+    word memAddr    : arch::REGISTERS_POWER;
+};  /// 25 bits here
+
+
+
+/// Flow Control instructions
+struct __attribute__((packed)) FlowControlHeadStd {
+    struct TargetRegHeadStd addrRegHead;
+    //
+};  /// 17 bits here
 
 
 

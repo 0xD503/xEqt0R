@@ -66,6 +66,7 @@ void CPU<T>::_decode (void)
             break;
         }
 
+
         default: {
             /// TODO: unknow type
             break;

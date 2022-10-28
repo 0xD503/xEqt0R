@@ -61,6 +61,11 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -Og")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
+
+## default cfg (can be changed during build through cmdline arg)
+set(CMAKE_BUILD_TYPE RelWithDebInfo)
+
+
 ## being a cross-platform target, we enforce standards conformance on MSVC
 #target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 
@@ -93,10 +98,6 @@ include_directories(./include/)
 #  COMPATIBILITY SameMajorVersion
 #  DEPENDENCIES "libname 7.7.7"
 #)
-
-
-## default cfg (can be changed during build through cmdline arg)
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 
 add_executable(ExEqtOR
