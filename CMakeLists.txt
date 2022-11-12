@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.14...3.22)
 
 ## Note: update this to your new project's name and version
 project(
-  ExEqtOR
+  xEqt0R
   VERSION 0.1
   LANGUAGES CXX
 )
@@ -24,7 +24,7 @@ endif()
 #include(cmake/CPM.cmake)
 
 ## PackageProject.cmake will be used to make our target installable
-#CPMAddPackage("gh:0xD503/ExEqtOR.cmake@1.0.0")
+#CPMAddPackage("gh:0xD503/xEqt0R.cmake@1.0.0")
 
 #CPMAddPackage(
 #  NAME libname
@@ -100,7 +100,7 @@ include_directories(./include/)
 #)
 
 
-add_executable(ExEqtOR
+add_executable(xEqt0R
   ./src/main.cpp
   #./src/except.cpp
   #./src/mapping_tables.cpp
