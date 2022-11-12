@@ -5,7 +5,9 @@
 #include <unordered_map>
 
 #include "arch.hpp"
-#include "instruction.hpp"
+#include "instructions/instruction.hpp"
+#include "instructions/isa.hpp"
+#include "instructions/switches.hpp"
 #include "register_file.hpp"
 
 

@@ -15,10 +15,16 @@ enum class INSTRUCTION {
     ROT,                     /// rotate
     ASR,                     /// arithmetic shift right
     MOV,
+    /// FAST instructions
+    MAX, MIN,
+    POPCNT,
     /// Mem manip
     LDR, STR,
+    LLDR,                    /// long load (up to 256 regs)
+    PUSH, POP,
     /// FLOW Control
     B,
+    CALL, RET,
     /// Other
     NOP,
 

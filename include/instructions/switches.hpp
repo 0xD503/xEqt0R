@@ -5,15 +5,15 @@
 
 
 enum class CPU_MODE {
-    DEFAULT = 0,
-    EXTENDED = 1
+    DEFAULT = 0b0,
+    EXTENDED = 0b1
 };
 
 enum class INSTR_TYPE {
-    DATA_PROC = 1,
-    MEM_MANIP = 2,
-    FLOW_CONT = 3,
-    DEBUG = 8,
+    DATA_PROC = 0b0001,
+    MEM_MANIP = 0b0010,
+    FLOW_CONT = 0b0011,
+    DEBUG = 0b1000,
     UNKNOWN
 };
 
@@ -25,6 +25,7 @@ enum class ALU_OP_TYPE {
 
 /// CONDition flags
 namespace CONDITION_FLAGS {
+    static constexpr size_t NUM = 4;
     static constexpr uint_fast8_t N = 1 << 0;  /// negative flag
     static constexpr uint_fast8_t Z = 1 << 1;  /// zero flag
     static constexpr uint_fast8_t C = 1 << 2;  /// carry flag
@@ -33,6 +34,7 @@ namespace CONDITION_FLAGS {
 
 /// SWitChes
 namespace ALU_SWITCHES {
+    static constexpr size_t NUM = 8;
     static constexpr uint_fast8_t N = 1 << 0;  /// ~negate/negate
     static constexpr uint_fast8_t E = 1 << 1;  /// ~extended set/extended
     static constexpr uint_fast8_t L = 1 << 2;  /// ~logical(arithmetical)/Logical

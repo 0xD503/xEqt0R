@@ -4,6 +4,7 @@
 //#include <cstdint>
 
 #include "arch.hpp"
+#include "instructions/switches.hpp"
 
 
 //using namespace arch;
@@ -18,7 +19,7 @@ struct __attribute__((packed)) ModeHead {
 /// Standart mode header declarations
 struct __attribute__((packed)) ConditonHeadStd {
     struct ModeHead modeHead;
-    word condition : 4;
+    word condition : CONDITION_FLAGS::NUM;
 };  /// 5 bits here
 
 /// Conditional operations header
@@ -93,6 +94,10 @@ struct __attribute__((packed)) FlowControlHeadStd {
 
 union EncodedInstruction {
     struct _field {
+        word mode : 1;
+        word cond : CONDITION_FLAGS::NUM;
+        word opCode : 4;
+        ////word targetReg :
 //        word mode       : 1;    /// 20
 //        word reserved_4 : 1;    /// 21
 //        word condition  : 4;    /// 9
@@ -106,12 +111,12 @@ union EncodedInstruction {
 //        word immediate  : 9;    /// 64
 //        word switches   : 5;    /// 16
 //        word reserved_3 : 2;    /// 18
-        word srcReg     : 5;    /// 51
-        word srcReg_2   : 5;    ///
-        word misc       : 2;    /// 23
-        word reserved_5 : 4;    /// 27
-        word opCode_2   : 4;    /// 40
-        word reserved_7 : 1;    /// 41
+        // word srcReg     : 5;    /// 51
+        // word srcReg_2   : 5;    ///
+        // word misc       : 2;    /// 23
+        // word reserved_5 : 4;    /// 27
+        // word opCode_2   : 4;    /// 40
+        // word reserved_7 : 1;    /// 41
     };
     struct _field field;
     word data;

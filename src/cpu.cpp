@@ -31,6 +31,7 @@ void CPU<T>::_fetch (void)
     /// Send signal throug memory bus to fetch instruction
     /// Design patter: ???
     /// TODO: increment PC during FETCH or EXECUTE???
+    //_encodedInstruction.data = instrMemory[pc];
     //_encodedInstruction.data = instrMemory[pc++];
 }
 
@@ -84,12 +85,11 @@ void CPU<T>::_execute (void)
     /// TODO: ADD flags changing on processing data
     switch (_instruction) {
         case INSTRUCTION::ADD: {
-            //std::cout << "ADDing something" << std::endl;
-            uint_fast8_t cond = _encodedInstruction.field.condition;
-            if (cond != 0)
-            {
-                /// TODO: break if condition doesn't allow to execute
-            }
+            // uint_fast8_t cond = _encodedInstruction.field.condition;
+            // if (cond != 0)
+            // {
+            //     /// TODO: break if condition doesn't allow to execute
+            // }
             //_result = _registerFile[??] + _registerFile[??];
             break;
         }
