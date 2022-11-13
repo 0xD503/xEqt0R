@@ -17,6 +17,13 @@ enum class INSTR_TYPE {
     UNKNOWN
 };
 
+enum class ShiftType {
+    LSL = 0b00,
+    LSR = 0b01,
+    ROT = 0b10,
+    ASR = 0b11
+};
+
 enum class ALU_OP_TYPE {
     ARITHMETICAL = 0b00,
     LOGICAL = 0b10,
@@ -30,7 +37,7 @@ namespace CONDITION_FLAGS {
     static constexpr uint_fast8_t Z = 1 << 1;  /// zero flag
     static constexpr uint_fast8_t C = 1 << 2;  /// carry flag
     static constexpr uint_fast8_t V = 1 << 3;  /// overflow flag
-};
+}
 
 /// SWitChes
 namespace ALU_SWITCHES {
@@ -43,7 +50,7 @@ namespace ALU_SWITCHES {
     static constexpr uint_fast8_t S = 1 << 5;  /// shift
     static constexpr uint_fast8_t S1 = 1 << 6; /// shift left/right
     static constexpr uint_fast8_t S2 = 1 << 7; /// rotate/arithm. shift right
-};
+}
 
 
 #endif // SWITCHES_H_

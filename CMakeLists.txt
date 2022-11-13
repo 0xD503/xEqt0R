@@ -107,6 +107,7 @@ add_executable(xEqt0R
   ./src/register.cpp
   ./src/register_file.cpp
   ./src/memory.cpp
+  ./src/device.cpp
   ./src/cpu.cpp
   ./src/soc.cpp
 )

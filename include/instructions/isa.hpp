@@ -2,7 +2,7 @@
 #define __ISA_HPP__
 
 
-enum class INSTRUCTION {
+enum class Instruction {
     /// Data proc
     AND = 1, NAND,
     ORR, NOR,

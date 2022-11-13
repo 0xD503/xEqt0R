@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "arch.hpp"
+#include "device.hpp"
 #include "instructions/instruction.hpp"
 #include "instructions/isa.hpp"
 #include "instructions/switches.hpp"
@@ -12,40 +13,35 @@
 
 
 template<typename T>
-class CPU {
+class CPU : public Device {
     public:
         explicit CPU(void);
         virtual ~CPU(void);
 
-        void run (void);
+        void cycle (void);
+        // virtual void run (void) override;
+        // virtual void stop (void) override;
 
     protected:
-        bool _running;
-
-        EncodedInstruction_t _encodedInstruction;
-        INSTRUCTION _instruction;
-        word _result;
         RegisterFile<T> _registerFile;
+        Register<T> _flags;
 
     protected:
-        word _flags;
-
-    protected:
-        void _fetch (void);
-        void _decode (void);
-        void _execute (void);
-        void _writeBack (void);
+        EncodedInstruction _fetch (void);
+        Instruction _decode (EncodedInstruction encodedInstr);
+        word _execute (Instruction instr);
+        void _writeBack (word result);
 
     private:
-        INSTR_TYPE __decodeOpcode (void);
-        void __prepareDatapath (void);
+        INSTR_TYPE __decodeOpcode (EncodedInstruction encodedInstr);
+        void __prepareDatapath (EncodedInstruction encodedInstr);
 
         //INSTRUCTION __getInstruction(uint_fast8_t)
 
     private:
-        /// Mapping table between Data Processing Instructions and their switches
-        static const std::unordered_map<uint_fast8_t,
-                                        INSTRUCTION> __DPI_MappingTable;
+        // /// Mapping table between Data Processing Instructions and their switches
+        // static const std::unordered_map<uint_fast8_t,
+        //                                 Instruction> __DPI_MappingTable;
 };
 
 
