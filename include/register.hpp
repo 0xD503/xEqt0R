@@ -17,9 +17,9 @@ class Register {
         const T& read (void) const;
         bool readBit (size_t index) const;
 
-        T& operator+ (const T& addendum) {
-            return (_value);
-        }
+        // T operator+ (const T& addendum) {
+        //     return (_value);
+        // }
 
     protected:
         T _value;

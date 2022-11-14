@@ -29,7 +29,7 @@ class CPU : public Device {
     protected:
         EncodedInstruction _fetch (void) const;
         Instruction _decode (EncodedInstruction encodedInstr) const;
-        void _execute (Instruction instr, EncodedInstruction encodedInstr) const;
+        void _execute (Instruction instr, EncodedInstruction encodedInstr);
         //void _writeBack (word result);
 
     private:

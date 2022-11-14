@@ -273,7 +273,7 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) const {
 }
 
 template<typename T>
-void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) const {
+void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
     //word result;
 
     /// TODO: ADD flags changing on processing data
