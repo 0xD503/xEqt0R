@@ -77,18 +77,21 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) {
                     }
 
                     default: {
+                        instruction = Instruction::UNKNOWN;
                         //static_assert(false, "wrong shift type");
                         break;
                     }
                 }
             }
             else {                                      /// ALU operation
-                uint_fast8_t extension;// = encodedInstr.aluOpHead.switches.fields;
+                uint_fast8_t extension = encodedInstr.aluOp.sw.fields.extended;
                 // instruction = __DPI_MappingTable.at(switches);
                 if (encodedInstr.aluOp.sw.fields.negate == 1) {
+                    /// Operations with negation
                     if (encodedInstr.aluOp.sw.fields.logical == 1) {
+                        /// Logical operations with negation
                         if (encodedInstr.aluOp.sw.fields.floating == 0) {
-                            extension = encodedInstr.aluOp.sw.fields.extended;
+                            /// Logical operations with negation
                             switch (extension) {
                                 case 0b00: {
                                     instruction = Instruction::NOR;
@@ -114,32 +117,125 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) {
                             }
                         }
                         else {
+                            /// no logical operations with real numbers
                             instruction = Instruction::UNKNOWN;
                         }
                     }
                     else {
-                        //
+                        /// Arithmetical operations with negation
+                        if (encodedInstr.aluOp.sw.fields.floating == 1) {
+                            /// Real numbers arithmethic with negation
+                            switch (extension) {
+                                case 0b00: {
+                                    instruction = Instruction::FSUB;
+                                    break;
+                                }
+                                case 0b10: {
+                                    instruction = Instruction::FDIV;
+                                    break;
+                                }
+
+                                default: {
+                                    instruction = Instruction::UNKNOWN;
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            /// Integer numbers arithmethic with negation
+                            switch (extension) {
+                                case 0b00: {
+                                    instruction = Instruction::SUB;
+                                    break;
+                                }
+                                case 0b01: {
+                                    instruction = Instruction::MOV;
+                                    break;
+                                }
+                                case 0b10: {
+                                    instruction = Instruction::DIV;
+                                    break;
+                                }
+
+                                default: {
+                                    instruction = Instruction::UNKNOWN;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 else {
-                    //
+                    /// Operations without negation
+                    if (encodedInstr.aluOp.sw.fields.logical == 1) {
+                        /// Logical operations without negation
+                        if (encodedInstr.aluOp.sw.fields.floating == 0) {
+                            /// Logical operations on integers without negation
+                            switch (extension) {
+                                case 0b00: {
+                                    instruction = Instruction::ORR;
+                                    break;
+                                }
+                                case 0b01: {
+                                    instruction = Instruction::AND;
+                                    break;
+                                }
+                                case 0b10: {
+                                    instruction = Instruction::XOR;
+                                    break;
+                                }
+
+                                default: {
+                                    instruction = Instruction::UNKNOWN;
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            /// No logical operations with real numbers
+                            instruction = Instruction::UNKNOWN;
+                        }
+                    }
+                    else {
+                        /// Arithmetical operations without negation
+                        if (encodedInstr.aluOp.sw.fields.floating == 1) {
+                            /// Arithmetical operations on real numbers without negation
+                            switch (extension) {
+                                case 0b00: {
+                                    instruction = Instruction::FADD;
+                                    break;
+                                }
+                                case 0b10: {
+                                    instruction = Instruction::FMUL;
+                                    break;
+                                }
+
+                                default: {
+                                    instruction = Instruction::UNKNOWN;
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            /// Arithmetical operations on integers without negation
+                            switch (extension) {
+                                case 0b00: {
+                                    instruction = Instruction::ADD;
+                                    break;
+                                }
+                                case 0b10: {
+                                    instruction = Instruction::MUL;
+                                    break;
+                                }
+
+                                default: {
+                                    instruction = Instruction::UNKNOWN;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
-//     {~N | ~E | ~L | ~F | ~A, Instruction::ADD},
-//     {~N | ~E | ~L |  F | ~A, Instruction::FADD},
-//     {~N | ~E |  L | ~F | ~A, Instruction::ORR},
-//     {~N | ~E |  L | ~F |  A, Instruction::AND},
-//     {~N |  E | ~L | ~F | ~A, Instruction::MUL},
-//     {~N |  E | ~L |  F | ~A, Instruction::FMUL},
-//     {~N |  E |  L | ~F | ~A, Instruction::XOR},
-//     { N | ~E | ~L | ~F | ~A, Instruction::SUB},
-//     { N | ~E | ~L | ~F |  A, Instruction::MOV},
-//     { N | ~E | ~L |  F | ~A, Instruction::FSUB},
-///     { N | ~E |  L | ~F | ~A, Instruction::NOR},
-///     { N | ~E |  L | ~F |  A, Instruction::NAND},
-//     { N |  E | ~L | ~F | ~A, Instruction::DIV},
-//     { N |  E | ~L |  F | ~A, Instruction::FDIV},
-///     { N |  E |  L | ~F | ~A, Instruction::NXOR},
-///     { N |  E |  L | ~F |  A, Instruction::NEG},
             }
             break;
         }
@@ -309,6 +405,22 @@ void CPU<T>::__prepareDatapath (EncodedInstruction encodedInstr) {
 
 /// private data
 
+////     {~N | ~E | ~L | ~F | ~A, Instruction::ADD},
+////     {~N | ~E | ~L |  F | ~A, Instruction::FADD},
+////     {~N | ~E |  L | ~F | ~A, Instruction::ORR},
+////     {~N | ~E |  L | ~F |  A, Instruction::AND},
+////     {~N |  E | ~L | ~F | ~A, Instruction::MUL},
+////     {~N |  E | ~L |  F | ~A, Instruction::FMUL},
+////     {~N |  E |  L | ~F | ~A, Instruction::XOR},
+////     { N | ~E | ~L | ~F | ~A, Instruction::SUB},
+////     { N | ~E | ~L | ~F |  A, Instruction::MOV},
+////     { N | ~E | ~L |  F | ~A, Instruction::FSUB},
+////     { N | ~E |  L | ~F | ~A, Instruction::NOR},
+////     { N | ~E |  L | ~F |  A, Instruction::NAND},
+////     { N |  E | ~L | ~F | ~A, Instruction::DIV},
+////     { N |  E | ~L |  F | ~A, Instruction::FDIV},
+////     { N |  E |  L | ~F | ~A, Instruction::NXOR},
+////     { N |  E |  L | ~F |  A, Instruction::NEG},
 // /// Mapping table between Data Processing Instructions and their switches
 // template<typename T>
 // const std::unordered_map<uint_fast8_t, Instruction> CPU<T>::__DPI_MappingTable = {

@@ -15,3 +15,4 @@ Add a software specification document
 12. Add peripheral interface
 13. Check with static analizer
 14. Check with dynamic analizer/profiler
+15. Multicore processor using threads
