@@ -35,7 +35,9 @@ class CPU : public Device {
     private:
         INSTR_TYPE __decodeOpcode (EncodedInstruction encodedInstr) const;
 //        void __prepareDatapath (EncodedInstruction encodedInstr);
+//
         bool __checkCondition (uint_fast8_t cond) const;
+        void __executeALUOp (EncodedInstruction encodedInstr, Instruction instr);
 
         //INSTRUCTION __getInstruction(uint_fast8_t)
 

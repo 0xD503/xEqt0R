@@ -1,5 +1,8 @@
 #include "cpu.hpp"
+
 #include <cstdint>
+
+#include <limits>
 
 
 template<typename T>
@@ -274,53 +277,36 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) const {
 
 template<typename T>
 void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
-    //word result;
-
     /// TODO: ADD flags changing on processing data
     switch (instr) {
         case Instruction::ADD: {
-            uint_fast8_t cond = static_cast<uint_fast8_t>(encodedInstr.headStd.cond.flags);
-            if (__checkCondition(cond))
-            {
-                word operand_2;
-                Registers targetRegID = (Registers) encodedInstr.aluOpImmStd.targetReg;
-                std::size_t srcReg_1_ID = encodedInstr.aluOpImmStd.srcReg_1;
-                if (encodedInstr.aluOpStd.imm == 1) {
-                    operand_2 = encodedInstr.aluOpImmStd.immediate;
-                }
-                else {
-                    operand_2 = _registerFile[encodedInstr.aluOpRegStd.srcReg_2].read();
-                }
-                operand_2 += _registerFile[srcReg_1_ID].read();
-                //_registerFile[targetRegID].write(_registerFile[srcReg_1_ID].read() + operand_2);
-                //_registerFile.writeRegister(targetRegID, _registerFile[srcReg_1_ID].read() + operand_2);
-                _registerFile.writeRegister(targetRegID, operand_2);
-            }
+            // uint_fast8_t cond = static_cast<uint_fast8_t>(encodedInstr.headStd.cond.flags);
+            // if (__checkCondition(cond)) {
+            //     Registers targetRegID = (Registers) encodedInstr.aluOpImmStd.targetReg;
+            //     std::size_t srcReg_1_ID = encodedInstr.aluOpImmStd.srcReg_1;
+            //     if (encodedInstr.aluOpStd.imm == 1) {
+            //         operand_2 = encodedInstr.aluOpImmStd.immediate;
+            //     }
+            //     else {
+            //         operand_2 = _registerFile[encodedInstr.aluOpRegStd.srcReg_2].read();
+            //     }
+            //     result = _registerFile[srcReg_1_ID].read() + operand_2;
+            //     _registerFile.writeRegister(targetRegID, result);
+            // }
             break;
         }
-        // case Instruction::SUB: {
-        //     //std::cout << "SUBstracting something" << std::endl;
-        //     uint_fast8_t cond = _encodedInstruction.field.condition;
-        //     _result = _registerFile[??] - _registerFile[??];
-        //     break;
-        // }
-        // case Instruction::AND: {
-        //     //std::cout << "ANDing something" << std::endl;
-        //     _result = _registerFile[??] & _registerFile[??];
-        //     break;
-        // }
-        // case Instruction::OR: {
-        //     //std::cout << "ORing something" << std::endl;
-        //     _result = _registerFile[??] | _registerFile[??];
-        //     break;
-        // }
-        // case Instruction::B:Instruction {
-        //     /// TODO: Undone
-        //     //std::cout << "Branching somewhere" << std::endl;
-        //     uint_fast8_t cond = _encodedInstruction.field.condition;
-        //     //pc = pc + 2;
-        //     break;
-        // }
+        case Instruction::SUB: {
+            //
+            break;
+        }
+        case Instruction::AND: {
+            //
+            break;
+        }
+        case Instruction::ORR: {
+            //
+            break;
+        }
         // case Instruction::MOV: {
         //     /// TODO: Undone
         //     //std::cout << "MOVing immediate to reg" << std::endl;
@@ -338,6 +324,13 @@ void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
         //     /// TODO: Undone
         //     //std::cout << "SToring something from Reg to mem" << std::endl;
         //     ?? = _registerFile[??];
+        //     break;
+        // }
+        // case Instruction::B:Instruction {
+        //     /// TODO: Undone
+        //     //std::cout << "Branching somewhere" << std::endl;
+        //     uint_fast8_t cond = _encodedInstruction.field.condition;
+        //     //pc = pc + 2;
         //     break;
         // }
 
@@ -412,6 +405,7 @@ INSTR_TYPE CPU<T>::__decodeOpcode (EncodedInstruction encodedInstr) const {
 //     // }
 // }
 
+
 template<typename T>
 bool CPU<T>::__checkCondition (uint_fast8_t cond) const {
     bool allow = false;
@@ -419,6 +413,100 @@ bool CPU<T>::__checkCondition (uint_fast8_t cond) const {
     //
 
     return (allow);
+}
+
+template<typename T>
+void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr) {
+    word result;
+    word operand_2;
+
+    uint_fast8_t cond = static_cast<uint_fast8_t>(encodedInstr.headStd.cond.flags);
+    if (__checkCondition(cond)) {
+        Registers targetRegID = (Registers) encodedInstr.aluOpImmStd.targetReg;
+        std::size_t srcReg_1_ID = encodedInstr.aluOpImmStd.srcReg_1;
+        if (encodedInstr.aluOpStd.imm == 1) {
+            operand_2 = encodedInstr.aluOpImmStd.immediate;
+        }
+        else {
+            operand_2 = _registerFile[encodedInstr.aluOpRegStd.srcReg_2].read();
+        }
+        switch (instr) {
+            case Instruction::AND: {
+                result = _registerFile[srcReg_1_ID].read() & operand_2;
+                break;
+            }
+            case Instruction::ORR: {
+                result = _registerFile[srcReg_1_ID].read() | operand_2;
+                break;
+            }
+            case Instruction::XOR: {
+                result = _registerFile[srcReg_1_ID].read() ^ operand_2;
+                break;
+            }
+            case Instruction::NAND: {
+                result = ~(_registerFile[srcReg_1_ID].read() & operand_2);
+                break;
+            }
+            case Instruction::NOR: {
+                result = ~(_registerFile[srcReg_1_ID].read() | operand_2);
+                break;
+            }
+            case Instruction::NXOR: {
+                result = ~(_registerFile[srcReg_1_ID].read() ^ operand_2);
+                break;
+            }
+            case Instruction::ADD: {
+                result = _registerFile[srcReg_1_ID].read() + operand_2;
+                break;
+            }
+            case Instruction::SUB: {
+                result = _registerFile[srcReg_1_ID].read() - operand_2;
+                break;
+            }
+            case Instruction::MUL: {
+                result = _registerFile[srcReg_1_ID].read() * operand_2;
+                break;
+            }
+            case Instruction::DIV: {
+                if (operand_2 != 0) {
+                    result = _registerFile[srcReg_1_ID].read() / operand_2;
+                }
+                else {
+                    result = UINT64_MAX;
+                }
+                break;
+            }
+            // case Instruction::FADD: {
+            //     result = _registerFile[srcReg_1_ID].read() + operand_2;
+            //     break;
+            // }
+            // case Instruction::FSUB: {
+            //     result = _registerFile[srcReg_1_ID].read() - operand_2;
+            //     break;
+            // }
+            // case Instruction::FMUL: {
+            //     result = static_cast<float>(_registerFile[srcReg_1_ID].read() * operand_2);
+            //     break;
+            // }
+            // case Instruction::FDIV: {
+            //     if (operand_2 != 0) {
+            //         result = static_cast<float>(_registerFile[srcReg_1_ID].read() / operand_2);
+            //     }
+            //     else {
+            //         result = std::numeric_limits<double>::max();
+            //     }
+            //     break;
+            // }
+
+            // case MOV: {
+            //     break;
+            // }
+            // case NEG: {
+            //     break;
+            // }
+        }
+        _registerFile.writeRegister(targetRegID, result);
+    }
 }
 
 
