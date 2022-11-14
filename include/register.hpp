@@ -1,7 +1,6 @@
 #ifndef __REGISTER_H__
 #define __REGISTER_H__
 
-#include "bit.hpp"
 #include <cstddef>
 
 
@@ -13,10 +12,14 @@ class Register {
         ~Register(void);
 
     public:
-        void write (T val);
-        void writeBit (size_t index, Bit_t val);
-        T read (void) const;
-        Bit_t readBit (size_t index) const;
+        void write (const T val);
+        void writeBit (const size_t index, bool val);
+        const T& read (void) const;
+        bool readBit (size_t index) const;
+
+        T& operator+ (const T& addendum) {
+            return (_value);
+        }
 
     protected:
         T _value;

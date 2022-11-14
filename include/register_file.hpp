@@ -5,7 +5,6 @@
 #include <cstddef>
 
 #include "arch.hpp"
-#include "bit.hpp"
 #include "register.hpp"
 
 
@@ -16,13 +15,20 @@ class RegisterFile {
         ~RegisterFile(void);
 
     public:
-        void writeRegister (REGISTERS reg, T val);
-        void writeRegisterBit (REGISTERS reg, size_t bitIndex, Bit_t val);
-        T readRegister (REGISTERS reg) const;
-        Bit_t readRegisterBit (REGISTERS reg, size_t bitIndex) const;
+        void writeRegister (Registers reg, T val);
+        void writeRegisterBit (Registers reg, size_t bitIndex, bool val);
+        T readRegister (Registers reg) const;
+        bool readRegisterBit (Registers reg, size_t bitIndex) const;
+
+        inline const Register<T>& operator[] (const std::size_t reg) const {
+            return (_file[reg]);
+        }
+        Register<T>& operator[] (const std::size_t reg) {
+            return (_file[reg]);
+        }
 
     protected:
-        static constexpr size_t _length = (const size_t) REGISTERS::RegsNumber;
+        static constexpr std::size_t _length = static_cast<std::size_t>(1 << arch::REGISTERS_POWER);
         std::array<Register<T>, _length> _file;
 
     private:

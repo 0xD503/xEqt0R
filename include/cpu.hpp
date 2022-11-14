@@ -27,14 +27,15 @@ class CPU : public Device {
         Register<T> _flags;
 
     protected:
-        EncodedInstruction _fetch (void);
-        Instruction _decode (EncodedInstruction encodedInstr);
-        word _execute (Instruction instr);
-        void _writeBack (word result);
+        EncodedInstruction _fetch (void) const;
+        Instruction _decode (EncodedInstruction encodedInstr) const;
+        void _execute (Instruction instr, EncodedInstruction encodedInstr) const;
+        //void _writeBack (word result);
 
     private:
-        INSTR_TYPE __decodeOpcode (EncodedInstruction encodedInstr);
-        void __prepareDatapath (EncodedInstruction encodedInstr);
+        INSTR_TYPE __decodeOpcode (EncodedInstruction encodedInstr) const;
+//        void __prepareDatapath (EncodedInstruction encodedInstr);
+        bool __checkCondition (uint_fast8_t cond) const;
 
         //INSTRUCTION __getInstruction(uint_fast8_t)
 

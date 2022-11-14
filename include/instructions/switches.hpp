@@ -41,15 +41,16 @@ namespace CONDITION_FLAGS {
 
 /// SWitChes
 namespace ALU_SWITCHES {
-    static constexpr size_t NUM = 8;
-    static constexpr uint_fast8_t N = 1 << 0;  /// ~negate/negate
-    static constexpr uint_fast8_t E = 1 << 1;  /// ~extended set/extended
-    static constexpr uint_fast8_t L = 1 << 2;  /// ~logical(arithmetical)/Logical
-    static constexpr uint_fast8_t F = 1 << 3;  /// ~fl.p. arithm./floating arithm.
-    static constexpr uint_fast8_t A = 1 << 4;  /// ~extended/extended(additional)
-    static constexpr uint_fast8_t S = 1 << 5;  /// shift
-    static constexpr uint_fast8_t S1 = 1 << 6; /// shift left/right
-    static constexpr uint_fast8_t S2 = 1 << 7; /// rotate/arithm. shift right
+    // static constexpr size_t NUM = 8;
+    // static constexpr uint_fast8_t N = 1 << 0;  /// ~negate/negate
+    // static constexpr uint_fast8_t E = 1 << 1;  /// ~extended set/extended
+    // static constexpr uint_fast8_t L = 1 << 2;  /// ~logical(arithmetical)/Logical
+    // static constexpr uint_fast8_t F = 1 << 3;  /// ~fl.p. arithm./floating arithm.
+    // static constexpr uint_fast8_t A = 1 << 4;  /// ~extended/extended(additional)
+    // static constexpr uint_fast8_t S = 1 << 5;  /// shift
+    // static constexpr uint_fast8_t S1 = 1 << 6; /// shift left/right
+    // static constexpr uint_fast8_t S2 = 1 << 7; /// rotate/arithm. shift right
+    //static constexpr uint_fast8_t MUL_DIV_XOR = 0b10;
 }
 
 

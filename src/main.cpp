@@ -37,8 +37,8 @@ int main (int argc, char *argv[])
     //int b = fff();
     //reg.read();
     // RegisterFile<word> regFile{};
-    // regFile.writeRegister(REGISTERS::PC, 0x07);
-    // std::cout << "PC now is " << regFile.readRegister(REGISTERS::PC);
+    // regFile.writeRegister(Registers::PC, 0x07);
+    // std::cout << "PC now is " << regFile.readRegister(Registers::PC);
     // Memory<i_mem_addr_t> mem{64};
     // std::cout << "Mem cap: " << mem.getSize() << "b, " << mem.getLength()
     //           << std::endl;

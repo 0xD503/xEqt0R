@@ -3,8 +3,7 @@
 
 template<typename T>
 RegisterFile<T>::RegisterFile(void) :
-    _file()
-{
+    _file() {
     //
 }
 
@@ -17,7 +16,7 @@ RegisterFile<T>::~RegisterFile(void)
 
 
 template<typename T>
-void RegisterFile<T>::writeRegister (REGISTERS reg, T val)
+void RegisterFile<T>::writeRegister (Registers reg, T val)
 {
     /// TODO: make reg index boundary check
     //static_assert(reg < _length, "regID >= regfile length");
@@ -26,7 +25,7 @@ void RegisterFile<T>::writeRegister (REGISTERS reg, T val)
 }
 
 template<typename T>
-void RegisterFile<T>::writeRegisterBit (REGISTERS reg, size_t bitIndex, Bit_t val)
+void RegisterFile<T>::writeRegisterBit (Registers reg, size_t bitIndex, bool val)
 {
     /// TODO: make reg and bit index boundary check
     // static_assert(reg < _length, "regID >= regfile length");
@@ -36,7 +35,7 @@ void RegisterFile<T>::writeRegisterBit (REGISTERS reg, size_t bitIndex, Bit_t va
 }
 
 template<typename T>
-T RegisterFile<T>::readRegister (REGISTERS reg) const
+T RegisterFile<T>::readRegister (Registers reg) const
 {
     /// TODO: make reg index boundary check
     //static_assert(reg < _length, "reg index >= regfile length");
@@ -45,7 +44,7 @@ T RegisterFile<T>::readRegister (REGISTERS reg) const
 }
 
 template<typename T>
-Bit_t RegisterFile<T>::readRegisterBit (REGISTERS reg, size_t bitIndex) const
+bool RegisterFile<T>::readRegisterBit (Registers reg, size_t bitIndex) const
 {
     /// TODO: make reg and bit index boundary check
     //static_assert(reg < _length, "reg index >= regfile length");

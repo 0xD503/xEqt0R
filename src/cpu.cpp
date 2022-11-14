@@ -23,8 +23,8 @@ void CPU<T>::cycle (void) {
 
     EncodedInstruction encodedInstr = _fetch();
     Instruction decodedInstr = _decode(encodedInstr);
-    word result = _execute(decodedInstr);
-    _writeBack(result);
+    _execute(decodedInstr, encodedInstr);
+    // _writeBack(result);
 }
 
 // template<typename T>
@@ -34,7 +34,7 @@ void CPU<T>::cycle (void) {
 
 
 template<typename T>
-EncodedInstruction CPU<T>::_fetch (void) {
+EncodedInstruction CPU<T>::_fetch (void) const {
     EncodedInstruction encodedInstruction;
 
     /// Send signal throug memory bus to fetch instruction
@@ -47,7 +47,7 @@ EncodedInstruction CPU<T>::_fetch (void) {
 }
 
 template<typename T>
-Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) {
+Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) const {
     Instruction instruction;
     INSTR_TYPE type = __decodeOpcode(encodedInstr);
 
@@ -55,8 +55,8 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) {
         case INSTR_TYPE::DATA_PROC: {
             /// TODO:
             /// Check op code
-            if (encodedInstr.dataProc.shift == 1) {    /// shift type op
-                ShiftType shtType = static_cast<ShiftType>(encodedInstr.shiftOp.shiftType);
+            if (encodedInstr.dataProcStd.shift == 1) {    /// shift type op
+                ShiftType shtType = static_cast<ShiftType>(encodedInstr.shiftOpStd.shiftType);
 
                 switch (shtType) {
                     case ShiftType::LSL: {
@@ -84,13 +84,13 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) {
                 }
             }
             else {                                      /// ALU operation
-                uint_fast8_t extension = encodedInstr.aluOp.sw.fields.extended;
+                uint_fast8_t extension = encodedInstr.aluOpStd.switches.flags.extended;
                 // instruction = __DPI_MappingTable.at(switches);
-                if (encodedInstr.aluOp.sw.fields.negate == 1) {
+                if (encodedInstr.aluOpStd.switches.flags.negate == 1) {
                     /// Operations with negation
-                    if (encodedInstr.aluOp.sw.fields.logical == 1) {
+                    if (encodedInstr.aluOpStd.switches.flags.logical == 1) {
                         /// Logical operations with negation
-                        if (encodedInstr.aluOp.sw.fields.floating == 0) {
+                        if (encodedInstr.aluOpStd.switches.flags.floating == 0) {
                             /// Logical operations with negation
                             switch (extension) {
                                 case 0b00: {
@@ -123,7 +123,7 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) {
                     }
                     else {
                         /// Arithmetical operations with negation
-                        if (encodedInstr.aluOp.sw.fields.floating == 1) {
+                        if (encodedInstr.aluOpStd.switches.flags.floating == 1) {
                             /// Real numbers arithmethic with negation
                             switch (extension) {
                                 case 0b00: {
@@ -167,9 +167,9 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) {
                 }
                 else {
                     /// Operations without negation
-                    if (encodedInstr.aluOp.sw.fields.logical == 1) {
+                    if (encodedInstr.aluOpStd.switches.flags.logical == 1) {
                         /// Logical operations without negation
-                        if (encodedInstr.aluOp.sw.fields.floating == 0) {
+                        if (encodedInstr.aluOpStd.switches.flags.floating == 0) {
                             /// Logical operations on integers without negation
                             switch (extension) {
                                 case 0b00: {
@@ -198,7 +198,7 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) {
                     }
                     else {
                         /// Arithmetical operations without negation
-                        if (encodedInstr.aluOp.sw.fields.floating == 1) {
+                        if (encodedInstr.aluOpStd.switches.flags.floating == 1) {
                             /// Arithmetical operations on real numbers without negation
                             switch (extension) {
                                 case 0b00: {
@@ -273,18 +273,29 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) {
 }
 
 template<typename T>
-word CPU<T>::_execute (Instruction instr) {
-    word result;
+void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) const {
+    //word result;
 
     /// TODO: ADD flags changing on processing data
     switch (instr) {
         case Instruction::ADD: {
-            // uint_fast8_t cond = _encodedInstruction.field.condition;
-            // if (cond != 0)
-            // {
-            //     /// TODO: break if condition doesn't allow to execute
-            // }
-            //_result = _registerFile[??] + _registerFile[??];
+            uint_fast8_t cond = static_cast<uint_fast8_t>(encodedInstr.headStd.cond.flags);
+            if (__checkCondition(cond))
+            {
+                word operand_2;
+                Registers targetRegID = (Registers) encodedInstr.aluOpImmStd.targetReg;
+                std::size_t srcReg_1_ID = encodedInstr.aluOpImmStd.srcReg_1;
+                if (encodedInstr.aluOpStd.imm == 1) {
+                    operand_2 = encodedInstr.aluOpImmStd.immediate;
+                }
+                else {
+                    operand_2 = _registerFile[encodedInstr.aluOpRegStd.srcReg_2].read();
+                }
+                operand_2 += _registerFile[srcReg_1_ID].read();
+                //_registerFile[targetRegID].write(_registerFile[srcReg_1_ID].read() + operand_2);
+                //_registerFile.writeRegister(targetRegID, _registerFile[srcReg_1_ID].read() + operand_2);
+                _registerFile.writeRegister(targetRegID, operand_2);
+            }
             break;
         }
         // case Instruction::SUB: {
@@ -337,26 +348,26 @@ word CPU<T>::_execute (Instruction instr) {
         }
     }
 
-    return (result);
+//    return (result);
 }
 
-template<typename T>
-void CPU<T>::_writeBack (word result)
-{
-    /// TODO: undone
-//    _registerFile[??] = _result;
-}
+// template<typename T>
+// void CPU<T>::_writeBack (word result)
+// {
+//     /// TODO: undone
+// //    _registerFile[??] = _result;
+// }
 
 
 
 /// private section
 template<typename T>
-INSTR_TYPE CPU<T>::__decodeOpcode (EncodedInstruction encodedInstr) {
+INSTR_TYPE CPU<T>::__decodeOpcode (EncodedInstruction encodedInstr) const {
     INSTR_TYPE type = INSTR_TYPE::UNKNOWN;
 
-    switch ((CPU_MODE) encodedInstr.head.mode) {
+    switch ((CPU_MODE) encodedInstr.headStd.mode.flag) {
         case CPU_MODE::DEFAULT: {
-            type = (INSTR_TYPE) encodedInstr.head.opCode;
+            type = (INSTR_TYPE) encodedInstr.headStd.opCode.code;
             break;
         }
         case CPU_MODE::EXTENDED: {
@@ -374,32 +385,40 @@ INSTR_TYPE CPU<T>::__decodeOpcode (EncodedInstruction encodedInstr) {
     return (type);
 }
 
+// template<typename T>
+// void CPU<T>::__prepareDatapath (EncodedInstruction encodedInstr) {
+//     /// TODO: check if its shift operation first
+//     //DataProcTypeHeadStd dataProcType =
+//     //_encodedInstruction
+//     //uint_fast8_t sw = _encodedInstruction.field.sw;
+//     //_instruction = __DPI_MappingTable.at(sw);
+
+
+//     // if (sw & ALU_SW::A) {
+//     //     if (switches & ALU_SWITCHES::E) {
+//     //         _instruction = Instruction::NEG;    /// binary negation
+//     //     }
+//     //     else {
+//     //         if (switches & ALU_SWITCHES::N) {
+//     //             _instruction = Instruction::NAND;
+//     //         }
+//     //         else {
+//     //             _instruction = Instruction::AND;
+//     //         }
+//     //     }
+//     // }
+//     // else {
+//     //     //
+//     // }
+// }
 
 template<typename T>
-void CPU<T>::__prepareDatapath (EncodedInstruction encodedInstr) {
-    /// TODO: check if its shift operation first
-    //DataProcTypeHeadStd dataProcType =
-    //_encodedInstruction
-    //uint_fast8_t sw = _encodedInstruction.field.sw;
-    //_instruction = __DPI_MappingTable.at(sw);
+bool CPU<T>::__checkCondition (uint_fast8_t cond) const {
+    bool allow = false;
 
+    //
 
-    // if (sw & ALU_SW::A) {
-    //     if (switches & ALU_SWITCHES::E) {
-    //         _instruction = Instruction::NEG;    /// binary negation
-    //     }
-    //     else {
-    //         if (switches & ALU_SWITCHES::N) {
-    //             _instruction = Instruction::NAND;
-    //         }
-    //         else {
-    //             _instruction = Instruction::AND;
-    //         }
-    //     }
-    // }
-    // else {
-    //     //
-    // }
+    return (allow);
 }
 
 
@@ -408,19 +427,19 @@ void CPU<T>::__prepareDatapath (EncodedInstruction encodedInstr) {
 ////     {~N | ~E | ~L | ~F | ~A, Instruction::ADD},
 ////     {~N | ~E | ~L |  F | ~A, Instruction::FADD},
 ////     {~N | ~E |  L | ~F | ~A, Instruction::ORR},
-////     {~N | ~E |  L | ~F |  A, Instruction::AND},
-////     {~N |  E | ~L | ~F | ~A, Instruction::MUL},
-////     {~N |  E | ~L |  F | ~A, Instruction::FMUL},
-////     {~N |  E |  L | ~F | ~A, Instruction::XOR},
+//////     {~N | ~E |  L | ~F |  A, Instruction::AND},
+/////     {~N |  E | ~L | ~F | ~A, Instruction::MUL},
+/////     {~N |  E | ~L |  F | ~A, Instruction::FMUL},
+/////     {~N |  E |  L | ~F | ~A, Instruction::XOR},
 ////     { N | ~E | ~L | ~F | ~A, Instruction::SUB},
-////     { N | ~E | ~L | ~F |  A, Instruction::MOV},
+//////     { N | ~E | ~L | ~F |  A, Instruction::MOV},
 ////     { N | ~E | ~L |  F | ~A, Instruction::FSUB},
 ////     { N | ~E |  L | ~F | ~A, Instruction::NOR},
-////     { N | ~E |  L | ~F |  A, Instruction::NAND},
-////     { N |  E | ~L | ~F | ~A, Instruction::DIV},
-////     { N |  E | ~L |  F | ~A, Instruction::FDIV},
-////     { N |  E |  L | ~F | ~A, Instruction::NXOR},
-////     { N |  E |  L | ~F |  A, Instruction::NEG},
+//////     { N | ~E |  L | ~F |  A, Instruction::NAND},
+/////     { N |  E | ~L | ~F | ~A, Instruction::DIV},
+/////     { N |  E | ~L |  F | ~A, Instruction::FDIV},
+/////     { N |  E |  L | ~F | ~A, Instruction::NXOR},
+///////     { N |  E |  L | ~F |  A, Instruction::NEG},
 // /// Mapping table between Data Processing Instructions and their switches
 // template<typename T>
 // const std::unordered_map<uint_fast8_t, Instruction> CPU<T>::__DPI_MappingTable = {
