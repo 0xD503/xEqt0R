@@ -1,7 +1,9 @@
 #include "cpu.hpp"
 
+#include <cstddef>
 #include <cstdint>
 
+#include <bit>
 #include <limits>
 
 
@@ -430,78 +432,152 @@ void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr)
         else {
             operand_2 = _registerFile[encodedInstr.aluOpRegStd.srcReg_2].read();
         }
+        /// shift operand 2
+        uint_fast8_t shamt = encodedInstr.dataProcStd.shamt;
+        word operand_1 = _registerFile[srcReg_1_ID].read();
+        operand_2 <<= shamt;
         switch (instr) {
             case Instruction::AND: {
-                result = _registerFile[srcReg_1_ID].read() & operand_2;
+                result = operand_1 & operand_2;
                 break;
             }
             case Instruction::ORR: {
-                result = _registerFile[srcReg_1_ID].read() | operand_2;
+                result = operand_1 | operand_2;
                 break;
             }
             case Instruction::XOR: {
-                result = _registerFile[srcReg_1_ID].read() ^ operand_2;
+                result = operand_1 ^ operand_2;
                 break;
             }
             case Instruction::NAND: {
-                result = ~(_registerFile[srcReg_1_ID].read() & operand_2);
+                result = ~(operand_1 & operand_2);
                 break;
             }
             case Instruction::NOR: {
-                result = ~(_registerFile[srcReg_1_ID].read() | operand_2);
+                result = ~(operand_1 | operand_2);
                 break;
             }
             case Instruction::NXOR: {
-                result = ~(_registerFile[srcReg_1_ID].read() ^ operand_2);
+                result = ~(operand_1 ^ operand_2);
                 break;
             }
             case Instruction::ADD: {
-                result = _registerFile[srcReg_1_ID].read() + operand_2;
+                result = operand_1 + operand_2;
                 break;
             }
             case Instruction::SUB: {
-                result = _registerFile[srcReg_1_ID].read() - operand_2;
+                result = operand_1 - operand_2;
                 break;
             }
             case Instruction::MUL: {
-                result = _registerFile[srcReg_1_ID].read() * operand_2;
+                result = operand_1 * operand_2;
                 break;
             }
             case Instruction::DIV: {
                 if (operand_2 != 0) {
-                    result = _registerFile[srcReg_1_ID].read() / operand_2;
+                    result = operand_1 / operand_2;
                 }
                 else {
                     result = UINT64_MAX;
                 }
                 break;
             }
-            // case Instruction::FADD: {
-            //     result = _registerFile[srcReg_1_ID].read() + operand_2;
+            case Instruction::FADD: {
+                result = static_cast<double>(operand_1) \
+                         + static_cast<double>(operand_2);
+                break;
+            }
+            case Instruction::FSUB: {
+                result = static_cast<double>(operand_1) \
+                         - static_cast<double>(operand_2);
+                break;
+            }
+            case Instruction::FMUL: {
+                result = static_cast<double>(operand_1) \
+                         * static_cast<float>(operand_2);
+                break;
+            }
+            case Instruction::FDIV: {
+                if (operand_2 != 0) {
+                    result = static_cast<float>(operand_1) \
+                             / static_cast<float>(operand_2);
+                }
+                else {
+                    result = std::numeric_limits<double>::max();
+                }
+                break;
+            }
+            case Instruction::MOV: {
+                result = operand_2;
+                break;
+            }
+            case Instruction::NEG: {
+                result = ~operand_1;
+                break;
+            }
+            /// Shift operations
+            case Instruction::LSL: {
+                result = operand_1 << shamt;
+                break;
+            }
+            case Instruction::LSR: {
+                result = operand_1 >> shamt;
+                break;
+            }
+            case Instruction::ROT: {
+                word regVal = operand_1;
+                std::size_t num = arch::WORD_WIDE - shamt;
+                word mask = (1 << (num)) - 1;
+                result = regVal >> shamt;
+                result |= (regVal & mask) << (num);
+                break;
+            }
+            case Instruction::ASR: {
+                result = (sword) (operand_1) >> shamt;
+                break;
+            }
+            case Instruction::MAX: {
+                result = std::max(operand_1, operand_2);
+                break;
+            }
+            case Instruction::MIN: {
+                result = std::min(operand_1, operand_2);
+                break;
+            }
+            case Instruction::POPCNT: {
+#if __has_builtin(__builtin_popcount)
+                result = std::popcount(operand_1);
+#else
+                result  = 0;
+                while (operand_1 != 0) {
+                    // if (operand_1 & 0x01) {
+                    //     result++;
+                    // }
+                    result += operand_1 & 0x01;
+                    operand_1 >>= 1;
+                }
+#endif  /// __has_builtin(__builtin_popcount)
+                break;
+            }
+
+            /// Memory manipulation instructions
+            // case Instruction::LDR: {
+            //     //
             //     break;
             // }
-            // case Instruction::FSUB: {
-            //     result = _registerFile[srcReg_1_ID].read() - operand_2;
-            //     break;
-            // }
-            // case Instruction::FMUL: {
-            //     result = static_cast<float>(_registerFile[srcReg_1_ID].read() * operand_2);
-            //     break;
-            // }
-            // case Instruction::FDIV: {
-            //     if (operand_2 != 0) {
-            //         result = static_cast<float>(_registerFile[srcReg_1_ID].read() / operand_2);
-            //     }
-            //     else {
-            //         result = std::numeric_limits<double>::max();
-            //     }
+            // case Instruction::STR: {
+            //     //
             //     break;
             // }
 
-            // case MOV: {
+            /// Flow control instructions
+            // case Instruction::B: {
+            //     //
             //     break;
             // }
-            // case NEG: {
+
+            // case Instruction::NOP: {
+            //     //
             //     break;
             // }
         }

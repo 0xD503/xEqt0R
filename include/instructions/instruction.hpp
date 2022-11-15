@@ -117,7 +117,6 @@ struct __attribute__((packed)) ShiftOpHeadStd {
 
 /// Memory Manipulating instructions
 struct __attribute__((packed)) MemoryManipStd {
-    //struct OpCodeHeadStd opCodeHead;
     struct TargetRegHeadStd targetRegHead;
     word memAddr    : arch::REGISTERS_POWER;
 };  ///  bits here
