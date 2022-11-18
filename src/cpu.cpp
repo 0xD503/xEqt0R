@@ -324,54 +324,40 @@ Instruction CPU<T, M, D>::_decode (EncodedInstruction encodedInstr) const {
 
 template<typename T, typename M, typename D>
 void CPU<T, M, D>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
+    INSTR_TYPE type = __decodeOpcode(encodedInstr);
+
     /// TODO: ADD flags changing on processing data
-    switch (instr) {
-        case Instruction::ADD: {
+    switch (type) {
+        case INSTR_TYPE::DATA_PROC: {
+            __executeALUOp(encodedInstr, instr);
             break;
         }
-        case Instruction::SUB: {
+        case INSTR_TYPE::MEM_MANIP: {
+            __executeMemOp(encodedInstr, instr);
+            break;
+        }
+        case INSTR_TYPE::FLOW_CONT: {
+            __executeFlowCtrlOp(encodedInstr, instr);
+            break;
+        }
+        case INSTR_TYPE::DEBUG: {
+            /// TODO:
             //
             break;
         }
-        case Instruction::AND: {
+
+        case INSTR_TYPE::UNKNOWN: {
+            /// TODO:
             //
             break;
         }
-        case Instruction::ORR: {
-            //
-            break;
-        }
-        case Instruction::MOV: {
-            break;
-        }
-        // case Instruction::LDR: {
-        //     /// TODO: Undone
-        //     //std::cout << "LoaDing something from mem to Reg" << std::endl;
-        //     _registerFile[??] = ??;
-        //     break;
-        // }
-        // case Instruction::STR: {
-        //     /// TODO: Undone
-        //     //std::cout << "SToring something from Reg to mem" << std::endl;
-        //     ?? = _registerFile[??];
-        //     break;
-        // }
-        // case Instruction::B:Instruction {
-        //     /// TODO: Undone
-        //     //std::cout << "Branching somewhere" << std::endl;
-        //     uint_fast8_t cond = _encodedInstruction.field.condition;
-        //     //pc = pc + 2;
-        //     break;
-        // }
+
 
         default: {
-            /// TODO: Undone wrong instruction handling
-            //std::cout << "!!!!!!!!!!!!UNKNOWN INSTRUCTION!!!!!!!!!!!!!!" << std::endl;
+            /// TODO: unknow type
             break;
         }
     }
-
-//    return (result);
 }
 
 // template<typename T>
@@ -409,33 +395,6 @@ INSTR_TYPE CPU<T, M, D>::__decodeOpcode (EncodedInstruction encodedInstr) const 
 
     return (type);
 }
-
-// template<typename T>
-// void CPU<T, M, D>::__prepareDatapath (EncodedInstruction encodedInstr) {
-//     /// TODO: check if its shift operation first
-//     //DataProcTypeHeadStd dataProcType =
-//     //_encodedInstruction
-//     //uint_fast8_t sw = _encodedInstruction.field.sw;
-//     //_instruction = __DPI_MappingTable.at(sw);
-
-
-//     // if (sw & ALU_SW::A) {
-//     //     if (switches & ALU_SWITCHES::E) {
-//     //         _instruction = Instruction::NEG;    /// binary negation
-//     //     }
-//     //     else {
-//     //         if (switches & ALU_SWITCHES::N) {
-//     //             _instruction = Instruction::NAND;
-//     //         }
-//     //         else {
-//     //             _instruction = Instruction::AND;
-//     //         }
-//     //     }
-//     // }
-//     // else {
-//     //     //
-//     // }
-// }
 
 
 template<typename T, typename M, typename D>
@@ -509,7 +468,8 @@ void CPU<T, M, D>::__executeALUOp (EncodedInstruction encodedInstr, Instruction 
                 }
                 else {
                     //result = UINT64_MAX;
-                    /// TODO: report
+                    /// TODO:
+                    goto end;
                 }
                 break;
             }
@@ -536,6 +496,8 @@ void CPU<T, M, D>::__executeALUOp (EncodedInstruction encodedInstr, Instruction 
                 }
                 else {
                     //result = std::numeric_limits<double>::max();
+                    /// TODO:
+                    goto end;
                 }
                 break;
             }
@@ -594,12 +556,14 @@ void CPU<T, M, D>::__executeALUOp (EncodedInstruction encodedInstr, Instruction 
 
             default: {
                 /// TODO:
-                break;
+                goto end;
             }
         }
 
         __writeBack(targetRegID, result);
     }
+end:
+    return;
 }
 
 /// Memory manipulation instructions
@@ -652,15 +616,17 @@ void CPU<T, M, D>::__executeMemOp (EncodedInstruction encodedInstr, Instruction 
 
 template<typename T, typename M, typename D>
 void CPU<T, M, D>::__executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruction instr) {
-    //
+    i_mem_addr_t addr = static_cast<i_mem_addr_t>(_registerFile[encodedInstr.flowCtrlStd.addrReg].read());
 
     switch (instr) {
         case Instruction::B: {
-            /// TODO:
+            __setPC(static_cast<T>(addr));
             break;
         }
         case Instruction::BR: {
             /// TODO:
+            addr += static_cast<i_mem_addr_t>(__getCurrentPC().read());
+            __setPC(static_cast<T>(addr));
             break;
         }
         case Instruction::BLX: {
@@ -668,7 +634,7 @@ void CPU<T, M, D>::__executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruc
             break;
         }
         case Instruction::NOP: {
-            /// TODO:
+            /// Do nothing
             break;
         }
 

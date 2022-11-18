@@ -51,6 +51,10 @@ class CPU : public Device {
         bool __checkCondition (uint_fast8_t cond) const;
         void __executeALUOp (EncodedInstruction encodedInstr, Instruction instr);
         void __executeMemOp (EncodedInstruction encodedInstr, Instruction instr);
+
+        inline void __setPC (const T& value) {
+            _registerFile.writeRegister(Registers::PC, value);
+        }
         void __executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruction instr);
 
         void __writeBack (Registers targetRegID, word result);
