@@ -54,12 +54,19 @@ endif()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ## flags
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Weffc++")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Weffc++")
 #set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 #set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -Og")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
+add_compile_options(
+    -Wsign-conversion -Wsign-promo -Wfloat-equal -Wenum-compare
+    -Wshadow -Wformat=2 -Wconversion -Wshift-overflow=2 -Wduplicated-cond -Wlogical-op
+    -Wcast-qual -Wcast-align -Wold-style-cast -Wredundant-decls
+    -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor
+)
 
 
 ## default cfg (can be changed during build through cmdline arg)
