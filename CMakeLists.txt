@@ -113,6 +113,9 @@ add_executable(xEqt0R
   #./src/mapping_tables.cpp
   ./src/register.cpp
   ./src/register_file.cpp
+  ./src/bus.cpp
+  ./src/memory_bus.cpp
+  ./src/x_memory_bus.cpp
   ./src/memory.cpp
   ./src/device.cpp
   ./src/cpu.cpp

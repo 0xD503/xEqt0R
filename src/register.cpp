@@ -32,10 +32,10 @@ void Register<T>::writeBit (const size_t bitIndex, bool val) {
     /// TODO: make bitIndex boundary check
 
     if (val) {
-        _value |= 1 << bitIndex;
+        _value |= (1UL << bitIndex);
     }
     else {
-        _value &= ~(1 << bitIndex);
+        _value &= ~(1UL << bitIndex);
     }
 }
 

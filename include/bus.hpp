@@ -6,15 +6,15 @@
 
 class Bus {
     public:
-        explicit Bus(void) = default;
-        virtual ~Bus(void) = 0;
+        explicit Bus() = default;
+        virtual ~Bus() = 0;
 
     protected:
         //
 
     private:
         //
-}
+};
 
 
 #endif // __BUS_HPP__

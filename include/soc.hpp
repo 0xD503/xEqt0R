@@ -3,10 +3,11 @@
 
 #include "cpu.hpp"
 #include "memory.hpp"
+#include "x_memory_bus.hpp"
 //#include <cstddef>
 
 
-template<typename T, typename M>
+template<typename T, typename M, typename D>
 class SoC {
     public:
         static_assert(sizeof(i_mem_addr_t) <= sizeof(Register<T>), "size of " \
@@ -18,7 +19,7 @@ class SoC {
                                                              "be more than "\
                                                              "reg size");
 
-        explicit SoC(size_t len);
+        explicit SoC(size_t instrMemLen, size_t dataMemLen);
         virtual ~SoC(void);
 
 
@@ -34,8 +35,11 @@ class SoC {
         void run (void);
 
     protected:
-        CPU<T> _cpu;
-        Memory<M> _memory;
+        CPU<T, M, D> _cpu;
+        Memory<M> _instructionMemory;
+        Memory<D> _dataMemory;
+        XMemoryBus<T, M, D> _instrMemoryBus;
+        XMemoryBus<T, D, M> _dataMemoryBus;
 
     private:
         //

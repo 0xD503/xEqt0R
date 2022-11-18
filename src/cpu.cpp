@@ -7,23 +7,24 @@
 #include <limits>
 
 
-template<typename T>
-CPU<T>::CPU(void) :
+template<typename T, typename M, typename D>
+CPU<T, M, D>::CPU(MemoryBus<T, M, D>& instrMemBus, MemoryBus<T, D, M>& dataMemBus) :
     Device(),
     _registerFile(),
-    _flags()
+    _flags(),
+    _instrMemBus(instrMemBus), _dataMemBus(dataMemBus)
 {
     //
 }
 
-template<typename T>
-CPU<T>::~CPU(void) {
+template<typename T, typename M, typename D>
+CPU<T, M, D>::~CPU() {
     //
 }
 
 
-template<typename T>
-void CPU<T>::cycle (void) {
+template<typename T, typename M, typename D>
+void CPU<T, M, D>::cycle (void) {
     //Device::run();
 
     EncodedInstruction encodedInstr = _fetch();
@@ -33,13 +34,13 @@ void CPU<T>::cycle (void) {
 }
 
 // template<typename T>
-// void CPU<T>::stop (void) {
+// void CPU<T, M, D>::stop (void) {
 //     Device::stop();
 // }
 
 
-template<typename T>
-EncodedInstruction CPU<T>::_fetch (void) const {
+template<typename T, typename M, typename D>
+EncodedInstruction CPU<T, M, D>::_fetch (void) const {
     EncodedInstruction encodedInstruction;
 
     /// Send signal throug memory bus to fetch instruction
@@ -51,8 +52,8 @@ EncodedInstruction CPU<T>::_fetch (void) const {
     return (encodedInstruction);
 }
 
-template<typename T>
-Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) const {
+template<typename T, typename M, typename D>
+Instruction CPU<T, M, D>::_decode (EncodedInstruction encodedInstr) const {
     Instruction instruction;
     INSTR_TYPE type = __decodeOpcode(encodedInstr);
 
@@ -315,24 +316,11 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) const {
     return (instruction);
 }
 
-template<typename T>
-void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
+template<typename T, typename M, typename D>
+void CPU<T, M, D>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
     /// TODO: ADD flags changing on processing data
     switch (instr) {
         case Instruction::ADD: {
-            // uint_fast8_t cond = static_cast<uint_fast8_t>(encodedInstr.headStd.cond.flags);
-            // if (__checkCondition(cond)) {
-            //     Registers targetRegID = (Registers) encodedInstr.aluOpImmStd.targetReg;
-            //     std::size_t srcReg_1_ID = encodedInstr.aluOpImmStd.srcReg_1;
-            //     if (encodedInstr.aluOpStd.imm == 1) {
-            //         operand_2 = encodedInstr.aluOpImmStd.immediate;
-            //     }
-            //     else {
-            //         operand_2 = _registerFile[encodedInstr.aluOpRegStd.srcReg_2].read();
-            //     }
-            //     result = _registerFile[srcReg_1_ID].read() + operand_2;
-            //     _registerFile.writeRegister(targetRegID, result);
-            // }
             break;
         }
         case Instruction::SUB: {
@@ -347,13 +335,9 @@ void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
             //
             break;
         }
-        // case Instruction::MOV: {
-        //     /// TODO: Undone
-        //     //std::cout << "MOVing immediate to reg" << std::endl;
-        //     uint_fast8_t cond = _encodedInstruction.field.condition;
-        //     _registerFile[??] = ??;
-        //     break;
-        // }
+        case Instruction::MOV: {
+            break;
+        }
         // case Instruction::LDR: {
         //     /// TODO: Undone
         //     //std::cout << "LoaDing something from mem to Reg" << std::endl;
@@ -385,7 +369,7 @@ void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
 }
 
 // template<typename T>
-// void CPU<T>::_writeBack (word result)
+// void CPU<T, M, D>::_writeBack (word result)
 // {
 //     /// TODO: undone
 // //    _registerFile[??] = _result;
@@ -396,38 +380,13 @@ void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
 /// private section
 
 
-template<typename T>
-word CPU<T>::__readInstructionMemory (word addr) {
-    word data;
-
-    return (data);
-}
-
-template<typename T>
-void CPU<T>::__writeInstructionMemory (word addr, word data) {
-    //
-}
-
-template<typename T>
-word CPU<T>::__readDataMemory (word addr) {
-    word data;
-
-    return (data);
-}
-
-template<typename T>
-void CPU<T>::__writeDataMemory (word addr, word data) {
-    //
-}
-
-
-template<typename T>
-INSTR_TYPE CPU<T>::__decodeOpcode (EncodedInstruction encodedInstr) const {
+template<typename T, typename M, typename D>
+INSTR_TYPE CPU<T, M, D>::__decodeOpcode (EncodedInstruction encodedInstr) const {
     INSTR_TYPE type = INSTR_TYPE::UNKNOWN;
 
-    switch ((CPU_MODE) encodedInstr.headStd.mode.flag) {
+    switch (static_cast<CPU_MODE>(encodedInstr.headStd.mode.flag)) {
         case CPU_MODE::DEFAULT: {
-            type = (INSTR_TYPE) encodedInstr.headStd.opCode.code;
+            type = static_cast<INSTR_TYPE>(encodedInstr.headStd.opCode.code);
             break;
         }
         case CPU_MODE::EXTENDED: {
@@ -446,7 +405,7 @@ INSTR_TYPE CPU<T>::__decodeOpcode (EncodedInstruction encodedInstr) const {
 }
 
 // template<typename T>
-// void CPU<T>::__prepareDatapath (EncodedInstruction encodedInstr) {
+// void CPU<T, M, D>::__prepareDatapath (EncodedInstruction encodedInstr) {
 //     /// TODO: check if its shift operation first
 //     //DataProcTypeHeadStd dataProcType =
 //     //_encodedInstruction
@@ -473,8 +432,8 @@ INSTR_TYPE CPU<T>::__decodeOpcode (EncodedInstruction encodedInstr) const {
 // }
 
 
-template<typename T>
-bool CPU<T>::__checkCondition (uint_fast8_t cond) const {
+template<typename T, typename M, typename D>
+bool CPU<T, M, D>::__checkCondition (uint_fast8_t cond) const {
     bool allow = false;
 
     //
@@ -482,14 +441,13 @@ bool CPU<T>::__checkCondition (uint_fast8_t cond) const {
     return (allow);
 }
 
-template<typename T>
-void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr) {
-    word result;
-    word operand_2;
-
+template<typename T, typename M, typename D>
+void CPU<T, M, D>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr) {
     uint_fast8_t cond = static_cast<uint_fast8_t>(encodedInstr.headStd.cond.flags);
     if (__checkCondition(cond)) {
-        Registers targetRegID = (Registers) encodedInstr.aluOpImmStd.targetReg;
+        word result;
+        word operand_2;
+        Registers targetRegID = static_cast<Registers>(encodedInstr.aluOpImmStd.targetReg);
         std::size_t srcReg_1_ID = encodedInstr.aluOpImmStd.srcReg_1;
         if (encodedInstr.aluOpStd.imm == 1) {
             operand_2 = encodedInstr.aluOpImmStd.immediate;
@@ -550,24 +508,24 @@ void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr)
                 break;
             }
             case Instruction::FADD: {
-                result = static_cast<double>(operand_1) \
-                         + static_cast<double>(operand_2);
+                result = static_cast<word>(static_cast<double>(operand_1) \
+                         + static_cast<double>(operand_2));
                 break;
             }
             case Instruction::FSUB: {
-                result = static_cast<double>(operand_1) \
-                         - static_cast<double>(operand_2);
+                result = static_cast<word>(static_cast<double>(operand_1) \
+                         - static_cast<double>(operand_2));
                 break;
             }
             case Instruction::FMUL: {
-                result = static_cast<double>(operand_1) \
-                         * static_cast<float>(operand_2);
+                result = static_cast<word>(static_cast<double>(operand_1) \
+                         * static_cast<float>(operand_2));
                 break;
             }
             case Instruction::FDIV: {
                 if (operand_2 != 0) {
-                    result = static_cast<float>(operand_1) \
-                             / static_cast<float>(operand_2);
+                    result = static_cast<word>(static_cast<float>(operand_1) \
+                             / static_cast<float>(operand_2));
                     __writeBack(targetRegID, result);
                 }
                 else {
@@ -595,13 +553,13 @@ void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr)
             case Instruction::ROT: {
                 word regVal = operand_1;
                 std::size_t num = arch::WORD_WIDE - shamt;
-                word mask = (1 << (num)) - 1;
+                word mask = (1UL << (num)) - 1;
                 result = regVal >> shamt;
                 result |= (regVal & mask) << (num);
                 break;
             }
             case Instruction::ASR: {
-                result = (sword) (operand_1) >> shamt;
+                result = static_cast<word>(static_cast<sword>(operand_1) >> shamt);
                 break;
             }
             case Instruction::MAX: {
@@ -614,7 +572,7 @@ void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr)
             }
             case Instruction::POPCNT: {
 #if __has_builtin(__builtin_popcount)
-                result = std::popcount(operand_1);
+                result = static_cast<word>(std::popcount(operand_1));
 #else
                 result  = 0;
                 while (operand_1 != 0) {
@@ -638,25 +596,34 @@ void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr)
     }
 }
 
-template<typename T>
-void CPU<T>::__executeMemOp (EncodedInstruction encodedInstr, Instruction instr) {
+/// Memory manipulation instructions
+template<typename T, typename M, typename D>
+void CPU<T, M, D>::__executeMemOp (EncodedInstruction encodedInstr, Instruction instr) {
+    size_t memAddr = _registerFile[encodedInstr.memManipStd.memAddr].read();
+    Registers regAddr = static_cast<Registers>(encodedInstr.memManipStd.dataReg);
+    D data;
 
-
-            /// Memory manipulation instructions
-            // case Instruction::LDR: {
-            //     word addr = _registerFile[encodedString.memoryManipStd.memAddr];
-            //     wotd data = __readDataMemory(addr);
-            //     __writeBack((Registers) encodedString.memoryManipStd.dataReg, data);
-            //     break;
-            // }
-            // case Instruction::STR: {
-            //     //
-            //     break;
-            // }
+    switch (instr) {
+        case Instruction::LDR: {
+            bool status = _dataMemBus.readMemory(memAddr, data);
+            if (status) {
+                __writeBack(regAddr, data);
+            }
+            else {
+                /// TODO:
+            }
+        //     __writeBack((Registers) encodedString.memoryManipStd.dataReg, data);
+            break;
+        }
+        case Instruction::STR: {
+            //
+            break;
+        }
+    }
 }
 
-template<typename T>
-void CPU<T>::__executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruction instr) {
+template<typename T, typename M, typename D>
+void CPU<T, M, D>::__executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruction instr) {
             /// Flow control instructions
             // case Instruction::B: {
             //     //
@@ -670,8 +637,8 @@ void CPU<T>::__executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruction i
 }
 
 
-template<typename T>
-void CPU<T>::__writeBack (Registers targetRegID, word result) {
+template<typename T, typename M, typename D>
+void CPU<T, M, D>::__writeBack (Registers targetRegID, word result) {
     _registerFile.writeRegister(targetRegID, result);   /// write back
 }
 
@@ -696,7 +663,7 @@ void CPU<T>::__writeBack (Registers targetRegID, word result) {
 ///////     { N |  E |  L | ~F |  A, Instruction::NEG},
 // /// Mapping table between Data Processing Instructions and their switches
 // template<typename T>
-// const std::unordered_map<uint_fast8_t, Instruction> CPU<T>::__DPI_MappingTable = {
+// const std::unordered_map<uint_fast8_t, Instruction> CPU<T, M, D>::__DPI_MappingTable = {
 //     {~N | ~E | ~L | ~F | ~A, Instruction::ADD},
 //     {~N | ~E | ~L |  F | ~A, Instruction::FADD},
 //     {~N | ~E |  L | ~F | ~A, Instruction::ORR},
@@ -723,7 +690,7 @@ void CPU<T>::__writeBack (Registers targetRegID, word result) {
     { N | ~E | ~L | ~F | ~A |  S | ~S1 |  S2, Instruction::LSR},   //
     { N | ~E | ~L | ~F | ~A |  S |  S1 | ~S2, Instruction::ROT},   //
 
-const std::unordered_map<uint_fast8_t, Instruction> CPU<T>::__DPI_MappingTable = {
+const std::unordered_map<uint_fast8_t, Instruction> CPU<T, M, D>::__DPI_MappingTable = {
     {~N | ~E | ~L | ~F | ~A | ~S | ~S1 | ~S2, Instruction::ADD},
 //     {~N | ~E | ~L | ~F | ~A |  S | ~S1 |  S2, Instruction::ASR},   //
     {~N | ~E | ~L |  F | ~A | ~S | ~S1 | ~S2, Instruction::FADD},
@@ -751,4 +718,4 @@ const std::unordered_map<uint_fast8_t, Instruction> CPU<T>::__DPI_MappingTable =
 
 /// Explicit template instantiation. It is done in order to keep template
 /// implementation separately from its declaration
-template class CPU<word>;
+template class CPU<word, word, word>;
