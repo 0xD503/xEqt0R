@@ -23,13 +23,13 @@ enum class Instruction {
     WLDR, WSTR,             /// wide load/store (up to 256 regs)
     PUSH, POP,
     /// FLOW Control
-    B,
+    B, BR, BLX,
     CALL, RET,
     /// Other
     NOP,
 
     /// Exception
-    BRK,
+    FAULT,
 
     UNKNOWN
 };

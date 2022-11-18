@@ -30,6 +30,12 @@ enum class ALU_OP_TYPE {
     FLOATING = 0b01
 };
 
+enum class BranchType {
+    ABSOLUTE = 0b00,
+    RELATIVE = 0b01,
+    LINKED   = 0b10
+};
+
 /// CONDition flags
 namespace CONDITION_FLAGS {
     static constexpr size_t NUM = 4;

@@ -265,7 +265,31 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) const {
         }
         case INSTR_TYPE::FLOW_CONT: {
             /// TODO:
-            //
+            if (encodedInstr.flowCtrlStd.branch == 1) {
+                BranchType br = static_cast<BranchType>(encodedInstr.flowCtrlStd.branchType);
+                switch (br) {
+                    case BranchType::ABSOLUTE: {
+                        instruction = Instruction::B;
+                        break;
+                    }
+                    case BranchType::RELATIVE: {
+                        instruction = Instruction::BR;
+                        break;
+                    }
+                    case BranchType::LINKED: {
+                        instruction = Instruction::BLX;
+                        break;
+                    }
+
+                    default: {
+                        instruction = Instruction::FAULT;
+                        break;
+                    }
+                }
+            }
+            else {
+                /// TODO: other flow ctrl
+            }
             break;
         }
         case INSTR_TYPE::DEBUG: {

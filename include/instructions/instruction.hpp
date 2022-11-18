@@ -129,9 +129,12 @@ struct __attribute__((packed)) MemoryManipStd {
 
 /// Flow Control instructions
 struct __attribute__((packed)) FlowControlHeadStd {
-    struct InstructionHead_2_Std addrRegHead;
-    //
-};  ///  bits here
+    struct InstructionHeadStd head;
+    word addrReg    : arch::REGISTERS_POWER;
+    word branch     : 1;
+    word reserve    : 1;
+    word branchType : 2;
+};  /// 21 bits here
 
 
 
@@ -146,7 +149,7 @@ union EncodedInstruction {
     struct ShiftOpHeadStd shiftOpStd;
 
     struct MemoryManipStd memManipStd;
-    // struct FlowControlHeadStd flowCtrlI;
+    struct FlowControlHeadStd flowCtrlStd;
     word __data;
 
 
