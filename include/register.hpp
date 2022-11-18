@@ -17,6 +17,16 @@ class Register {
         const T& read (void) const;
         bool readBit (size_t index) const;
 
+        /// prefix increment
+        Register& operator++() {
+            return (*this);
+        }
+        /// postfix increment
+        Register operator++(int) {
+            Register<T> old = *this;  /// copy old val
+            operator++();             /// prefix
+            return (old);             /// return old val
+        }
         // T operator+ (const T& addendum) {
         //     return (_value);
         // }

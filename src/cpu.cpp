@@ -30,7 +30,8 @@ void CPU<T, M, D>::cycle (void) {
     EncodedInstruction encodedInstr = _fetch();
     Instruction decodedInstr = _decode(encodedInstr);
     _execute(decodedInstr, encodedInstr);
-    // _writeBack(result);
+    //_writeBack(result);
+    _incrementPC();
 }
 
 // template<typename T>
@@ -40,14 +41,19 @@ void CPU<T, M, D>::cycle (void) {
 
 
 template<typename T, typename M, typename D>
-EncodedInstruction CPU<T, M, D>::_fetch (void) const {
+EncodedInstruction CPU<T, M, D>::_fetch () const {
     EncodedInstruction encodedInstruction;
 
     /// Send signal throug memory bus to fetch instruction
     /// Design patter: ???
     /// TODO: increment PC during FETCH or EXECUTE???
-    //_encodedInstruction.data = instrMemory[pc];
-    //_encodedInstruction.data = instrMemory[pc++];
+    bool status = _instrMemBus.readMemory(__getCurrentPC().read(), encodedInstruction.data);
+    if (status) {
+        /// TODO: ???
+    }
+    else {
+        /// TODO: ???
+    }
 
     return (encodedInstruction);
 }
@@ -438,7 +444,7 @@ bool CPU<T, M, D>::__checkCondition (uint_fast8_t cond) const {
 
     //
 
-    return (allow);
+    return (true);
 }
 
 template<typename T, typename M, typename D>
@@ -602,21 +608,43 @@ void CPU<T, M, D>::__executeMemOp (EncodedInstruction encodedInstr, Instruction 
     size_t memAddr = _registerFile[encodedInstr.memManipStd.memAddr].read();
     Registers regAddr = static_cast<Registers>(encodedInstr.memManipStd.dataReg);
     D data;
+    bool status;
 
     switch (instr) {
         case Instruction::LDR: {
-            bool status = _dataMemBus.readMemory(memAddr, data);
+            status = _dataMemBus.readMemory(memAddr, data);
             if (status) {
                 __writeBack(regAddr, data);
             }
             else {
-                /// TODO:
+                /// TODO: report error
+                /// 
             }
         //     __writeBack((Registers) encodedString.memoryManipStd.dataReg, data);
             break;
         }
         case Instruction::STR: {
-            //
+            data = _registerFile.readRegister(regAddr);
+            status = _dataMemBus.writeMemory(memAddr, data);
+            if (status) {
+                /// TODO:
+            }
+            else {
+                /// TODO:
+            }
+            break;
+        }
+        case Instruction::WLDR: {
+            /// TODO:
+            break;
+        }
+        case Instruction::WSTR: {
+            /// TODO:
+            break;
+        }
+
+        default: {
+            /// TODO:
             break;
         }
     }
@@ -624,6 +652,32 @@ void CPU<T, M, D>::__executeMemOp (EncodedInstruction encodedInstr, Instruction 
 
 template<typename T, typename M, typename D>
 void CPU<T, M, D>::__executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruction instr) {
+    //
+
+    switch (instr) {
+        case Instruction::B: {
+            /// TODO:
+            break;
+        }
+        case Instruction::BR: {
+            /// TODO:
+            break;
+        }
+        case Instruction::BLX: {
+            /// TODO:
+            break;
+        }
+        case Instruction::NOP: {
+            /// TODO:
+            break;
+        }
+
+        default: {
+            /// TODO:
+            break;
+        }
+    }
+
             /// Flow control instructions
             // case Instruction::B: {
             //     //

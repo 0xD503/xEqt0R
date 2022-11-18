@@ -1,6 +1,7 @@
 #ifndef __CPU_H__
 #define __CPU_H__
 
+#include <cstddef>
 #include <cstdint>
 #include <unordered_map>
 
@@ -10,6 +11,7 @@
 #include "instructions/isa.hpp"
 #include "instructions/switches.hpp"
 #include "memory_bus.hpp"
+#include "register.hpp"
 #include "register_file.hpp"
 
 
@@ -31,16 +33,18 @@ class CPU : public Device {
         MemoryBus<T, D, M>& _dataMemBus;
 
     protected:
-        EncodedInstruction _fetch (void) const;
-        Instruction _decode (EncodedInstruction encodedInstr) const;
-        void _execute (Instruction instr, EncodedInstruction encodedInstr);
+        virtual EncodedInstruction _fetch () const;
+        virtual Instruction _decode (EncodedInstruction encodedInstr) const;
+        virtual void _execute (Instruction instr, EncodedInstruction encodedInstr);
         //void _writeBack (word result);
+        virtual inline void _incrementPC () {
+            _registerFile[static_cast<std::size_t>(Registers::PC)]++;
+        }
 
     private:
-        // word __readInstructionMemory (word addr);
-        // void __writeInstructionMemory (word addr, word data);
-        // word __readDataMemory (word addr);
-        // void __writeDataMemory (word addr, word data);
+        inline const Register<T>& __getCurrentPC () const {
+            return (_registerFile[static_cast<std::size_t>(Registers::PC)]);
+        }
 
         INSTR_TYPE __decodeOpcode (EncodedInstruction encodedInstr) const;
 

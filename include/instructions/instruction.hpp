@@ -68,14 +68,22 @@ struct __attribute__((packed)) ALUOpStd {
 };  /// 38 bits here
 
 struct __attribute__((packed)) ALUOpRegStd {
-    struct InstructionHeadStd head;
+    //struct InstructionHeadStd head;
+    word head      : 9;
     word targetReg : arch::REGISTERS_POWER;
     word shamt     : 6;   /// shift amout
     word shift     : 1;   /// shifts always; 1 -shift operand, 0 -shift Imm/src_2
     word imm       : 1;  /// 1 - use immediate; 0 - use srcReg_2
-    union ALUSwitches switches;
+    // //union ALUSwitches switches;
+    // word negate    : 1;  /// 1 - negation used, 0 - don't negate
+    // /// (logical ^ arithmetical) | floating)  op. type
+    // word logical   : 1;  /// 1 - logical, 0 - arithmetical
+    // word floating  : 1;  /// 1 - real numbers, 0 - integers
+    // word extended  : 2;  /// extended instructions support
+    word switches  : 5;
     word srcReg_1  : arch::REGISTERS_POWER;
     word srcReg_2  : arch::REGISTERS_POWER;   ///
+    word reserve   : 18;
 };  /// 46 bits here
 
 struct __attribute__((packed)) ALUOpImmStd {
@@ -108,32 +116,38 @@ struct __attribute__((packed)) MovOpImmStd {
 
 
 struct __attribute__((packed)) ShiftOpHeadStd {
-    struct DataProcTypeHeadStd dataProcType;
+    //struct DataProcTypeHeadStd dataProcType;
+    word dataProcType : 24;
     word shiftType : 2;
     word srcReg_1  : arch::REGISTERS_POWER;    /// operand that will be shifted
+    word reserve   : 30;
 };  /// 34 bits here
 
 
 
 /// Memory Manipulating instructions
 struct __attribute__((packed)) MemoryManipStd {
-    struct InstructionHeadStd head;
+    //struct InstructionHeadStd head;
+    word head    : 9;
     word dataReg : arch::REGISTERS_POWER;
     word load    : 1;   /// load/~store
     word wide    : 1;   /// wide operation
     word reserve : 3;
     word memAddr : arch::REGISTERS_POWER;
+    word reserve_2 : 34;
 };  /// 30 bits here
 
 
 
 /// Flow Control instructions
 struct __attribute__((packed)) FlowControlHeadStd {
-    struct InstructionHeadStd head;
+    //struct InstructionHeadStd head;
+    word head       : 9;
     word addrReg    : arch::REGISTERS_POWER;
     word branch     : 1;
     word reserve    : 1;
     word branchType : 2;
+    word reserved   : 43;
 };  /// 21 bits here
 
 
@@ -150,7 +164,7 @@ union EncodedInstruction {
 
     struct MemoryManipStd memManipStd;
     struct FlowControlHeadStd flowCtrlStd;
-    word __data;
+    word data;
 
 
     /// ctor/dtor
