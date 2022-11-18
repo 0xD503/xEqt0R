@@ -33,11 +33,20 @@ class CPU : public Device {
         //void _writeBack (word result);
 
     private:
+        word __readInstructionMemory (word addr);
+        void __writeInstructionMemory (word addr, word data);
+        word __readDataMemory (word addr);
+        void __writeDataMemory (word addr, word data);
+
         INSTR_TYPE __decodeOpcode (EncodedInstruction encodedInstr) const;
 //        void __prepareDatapath (EncodedInstruction encodedInstr);
 //
         bool __checkCondition (uint_fast8_t cond) const;
         void __executeALUOp (EncodedInstruction encodedInstr, Instruction instr);
+        void __executeMemOp (EncodedInstruction encodedInstr, Instruction instr);
+        void __executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruction instr);
+
+        void __writeBack (Registers targetRegID, word result);
 
         //INSTRUCTION __getInstruction(uint_fast8_t)
 

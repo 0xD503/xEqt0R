@@ -9,24 +9,27 @@ enum class Instruction {
     XOR, NXOR,
     ADD, SUB,
     MUL, DIV,
-    FADD, FSUB, FMUL, FDIV,  /// FPU
-    NEG,                     /// binary negation
-    LSL, LSR,                /// shift
-    ROT,                     /// rotate
-    ASR,                     /// arithmetic shift right
+    FADD, FSUB, FMUL, FDIV, /// FPU
+    NEG,                    /// binary negation
+    LSL, LSR,               /// shift
+    ROT,                    /// rotate
+    ASR,                    /// arithmetic shift right
     MOV,
     /// FAST instructions
     MAX, MIN,
     POPCNT,
     /// Mem manip
     LDR, STR,
-    LLDR,                    /// long load (up to 256 regs)
+    WLDR, WSTR,             /// wide load/store (up to 256 regs)
     PUSH, POP,
     /// FLOW Control
     B,
     CALL, RET,
     /// Other
     NOP,
+
+    /// Exception
+    BRK,
 
     UNKNOWN
 };

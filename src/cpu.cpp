@@ -245,8 +245,22 @@ Instruction CPU<T>::_decode (EncodedInstruction encodedInstr) const {
             break;
         }
         case INSTR_TYPE::MEM_MANIP: {
-            /// TODO:
-            //
+            if (encodedInstr.memManipStd.load == 1) {
+                if (encodedInstr.memManipStd.wide == 0) {
+                    instruction = Instruction::LDR;
+                }
+                else {
+                    instruction = Instruction::WLDR;
+                }
+            }
+            else {
+                if (encodedInstr.memManipStd.wide == 0) {
+                    instruction = Instruction::STR;
+                }
+                else {
+                    instruction = Instruction::WSTR;
+                }
+            }
             break;
         }
         case INSTR_TYPE::FLOW_CONT: {
@@ -356,6 +370,33 @@ void CPU<T>::_execute (Instruction instr, EncodedInstruction encodedInstr) {
 
 
 /// private section
+
+
+template<typename T>
+word CPU<T>::__readInstructionMemory (word addr) {
+    word data;
+
+    return (data);
+}
+
+template<typename T>
+void CPU<T>::__writeInstructionMemory (word addr, word data) {
+    //
+}
+
+template<typename T>
+word CPU<T>::__readDataMemory (word addr) {
+    word data;
+
+    return (data);
+}
+
+template<typename T>
+void CPU<T>::__writeDataMemory (word addr, word data) {
+    //
+}
+
+
 template<typename T>
 INSTR_TYPE CPU<T>::__decodeOpcode (EncodedInstruction encodedInstr) const {
     INSTR_TYPE type = INSTR_TYPE::UNKNOWN;
@@ -476,9 +517,11 @@ void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr)
             case Instruction::DIV: {
                 if (operand_2 != 0) {
                     result = operand_1 / operand_2;
+                    __writeBack(targetRegID, result);
                 }
                 else {
-                    result = UINT64_MAX;
+                    //result = UINT64_MAX;
+                    /// TODO: report
                 }
                 break;
             }
@@ -501,9 +544,10 @@ void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr)
                 if (operand_2 != 0) {
                     result = static_cast<float>(operand_1) \
                              / static_cast<float>(operand_2);
+                    __writeBack(targetRegID, result);
                 }
                 else {
-                    result = std::numeric_limits<double>::max();
+                    //result = std::numeric_limits<double>::max();
                 }
                 break;
             }
@@ -560,16 +604,35 @@ void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr)
                 break;
             }
 
+            default: {
+                /// TODO:
+                break;
+            }
+        }
+
+        __writeBack(targetRegID, result);
+    }
+}
+
+template<typename T>
+void CPU<T>::__executeMemOp (EncodedInstruction encodedInstr, Instruction instr) {
+
+
             /// Memory manipulation instructions
             // case Instruction::LDR: {
-            //     //
+            //     word addr = _registerFile[encodedString.memoryManipStd.memAddr];
+            //     wotd data = __readDataMemory(addr);
+            //     __writeBack((Registers) encodedString.memoryManipStd.dataReg, data);
             //     break;
             // }
             // case Instruction::STR: {
             //     //
             //     break;
             // }
+}
 
+template<typename T>
+void CPU<T>::__executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruction instr) {
             /// Flow control instructions
             // case Instruction::B: {
             //     //
@@ -580,9 +643,12 @@ void CPU<T>::__executeALUOp (EncodedInstruction encodedInstr, Instruction instr)
             //     //
             //     break;
             // }
-        }
-        _registerFile.writeRegister(targetRegID, result);
-    }
+}
+
+
+template<typename T>
+void CPU<T>::__writeBack (Registers targetRegID, word result) {
+    _registerFile.writeRegister(targetRegID, result);   /// write back
 }
 
 

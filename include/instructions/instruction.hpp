@@ -43,7 +43,7 @@ struct __attribute__((packed)) InstructionHeadStd {
     struct OpCodeStd opCode;
 };  /// 9 bits here
 
-struct __attribute__((packed)) TargetRegHeadStd {
+struct __attribute__((packed)) InstructionHead_2_Std {
     struct InstructionHeadStd instrHead;
     word reg  : arch::REGISTERS_POWER; /// need for most of the instrs
 };  /// 17 bits here
@@ -51,7 +51,7 @@ struct __attribute__((packed)) TargetRegHeadStd {
 
 /// Data Processing instructions headers
 struct __attribute__((packed)) DataProcTypeHeadStd {
-    struct TargetRegHeadStd destRegHead;
+    struct InstructionHead_2_Std destRegHead;
     word shamt    : 6;   /// shift amout
     word shift    : 1;   /// shifts always; 1 -shift operand, 0 -shift Imm/src_2
 };  /// 24 bits here
@@ -117,15 +117,19 @@ struct __attribute__((packed)) ShiftOpHeadStd {
 
 /// Memory Manipulating instructions
 struct __attribute__((packed)) MemoryManipStd {
-    struct TargetRegHeadStd targetRegHead;
-    word memAddr    : arch::REGISTERS_POWER;
-};  ///  bits here
+    struct InstructionHeadStd head;
+    word dataReg : arch::REGISTERS_POWER;
+    word load    : 1;   /// load/~store
+    word wide    : 1;   /// wide operation
+    word reserve : 3;
+    word memAddr : arch::REGISTERS_POWER;
+};  /// 30 bits here
 
 
 
 /// Flow Control instructions
 struct __attribute__((packed)) FlowControlHeadStd {
-    struct TargetRegHeadStd addrRegHead;
+    struct InstructionHead_2_Std addrRegHead;
     //
 };  ///  bits here
 
@@ -141,7 +145,7 @@ union EncodedInstruction {
 //    struct MovOpImmStd movOpImmStd;
     struct ShiftOpHeadStd shiftOpStd;
 
-    // struct MemoryManipStd memoryManipI;
+    struct MemoryManipStd memManipStd;
     // struct FlowControlHeadStd flowCtrlI;
     word __data;
 
