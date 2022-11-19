@@ -38,11 +38,12 @@ enum class BranchType {
 
 /// CONDition flags
 namespace CONDITION_FLAGS {
-    static constexpr size_t NUM = 4;
+    static constexpr size_t NUM = 2;
+    static constexpr uint_fast8_t MASK = 0b11;
     static constexpr uint_fast8_t N = 1 << 0;  /// negative flag
     static constexpr uint_fast8_t Z = 1 << 1;  /// zero flag
-    static constexpr uint_fast8_t C = 1 << 2;  /// carry flag
-    static constexpr uint_fast8_t V = 1 << 3;  /// overflow flag
+    //static constexpr uint_fast8_t C = 1 << 2;  /// carry flag
+    static constexpr uint_fast8_t CONDITIONAL = 1 << 3;  /// 1 - cond. op, 0 - no cond.
 }
 
 /// SWitChes

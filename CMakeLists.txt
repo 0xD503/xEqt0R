@@ -109,6 +109,7 @@ include_directories(./include/)
 
 add_executable(xEqt0R
   ./src/main.cpp
+  ./src/settings.cpp
   #./src/except.cpp
   #./src/mapping_tables.cpp
   ./src/register.cpp

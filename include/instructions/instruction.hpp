@@ -13,8 +13,11 @@ struct __attribute__((packed)) ModeFlag {
 
 /// Standart mode header declarations
 struct __attribute__((packed)) ConditonFlagsStd {
-    //struct ModeHead modeHead;
     word flags : CONDITION_FLAGS::NUM;
+    // word negative : 1;
+    // word zero     : 1;
+    // word reserve  : 1;
+    // word cond     : 1;
 };  /// 4 bits here
 
 /// Conditional operations header

@@ -373,6 +373,16 @@ void CPU<T, M, D>::_execute (Instruction instr, EncodedInstruction encodedInstr)
 
 
 template<typename T, typename M, typename D>
+bool CPU<T, M, D>::__checkFlags (uint_fast8_t flags) const {
+    bool set;
+
+    T currFlags = _flags.read();
+    set = ((currFlags & flags) != 0) ?  true : false; /// if any flag is set, return true
+
+    return (set);
+}
+
+template<typename T, typename M, typename D>
 INSTR_TYPE CPU<T, M, D>::__decodeOpcode (EncodedInstruction encodedInstr) const {
     INSTR_TYPE type = INSTR_TYPE::UNKNOWN;
 
@@ -399,11 +409,15 @@ INSTR_TYPE CPU<T, M, D>::__decodeOpcode (EncodedInstruction encodedInstr) const 
 
 template<typename T, typename M, typename D>
 bool CPU<T, M, D>::__checkCondition (uint_fast8_t cond) const {
-    bool allow = false;
+    bool allow = true;
 
-    //
+    /// check if operation conditional
+    if (cond & CONDITION_FLAGS::CONDITIONAL) {
+        /// allow if any flag is set
+        allow = __checkFlags(cond & CONDITION_FLAGS::MASK);
+    }
 
-    return (true);
+    return (allow);
 }
 
 template<typename T, typename M, typename D>

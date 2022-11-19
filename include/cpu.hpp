@@ -46,6 +46,7 @@ class CPU : public Device {
             return (_registerFile[static_cast<std::size_t>(Registers::PC)]);
         }
 
+        bool __checkFlags (uint_fast8_t flags) const;
         INSTR_TYPE __decodeOpcode (EncodedInstruction encodedInstr) const;
 
         bool __checkCondition (uint_fast8_t cond) const;

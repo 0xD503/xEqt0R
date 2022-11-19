@@ -1,18 +1,22 @@
-#include <cstddef>
-#include <cstdint>
-#include <iostream>
+//#include <cstdlib>
 
-//#include "arch.hpp"
-#include "memory.hpp"
+#include "settings.hpp"
 #include "soc.hpp"
 
-
-static constexpr size_t memLen = 2 << 8;
 
 
 int main (int argc, char *argv[])
 {
+    int status = EXIT_FAILURE;
+    std::ifstream instrMemInitFile;
+    std::ofstream coreDumpFile;
+
+    /// set up before starting
+    Settings settings(argc, argv, instrMemInitFile, coreDumpFile);
     SoC<word, word, word> soc(32768, 32768);
+    if (!settings.isCorrect()) {
+        goto end;
+    }
     // Memory<word> memory(32768);
 
     // //word temp = 0xDEADFEED;
@@ -28,15 +32,11 @@ int main (int argc, char *argv[])
 
     soc.run();
 
-    std::cout << "Power off..." << std::endl;
+    //std::cout << "Power off..." << std::endl;
+
+    status = EXIT_SUCCESS;
 
 
-    while (true)
-    {
-        //instr = readmem
-        //execute(instr);
-    }
-
-
-    return (0);
+end:
+    return (status);
 }

@@ -27,6 +27,7 @@ enum class Instruction {
     CALL, RET,
     /// Other
     NOP,
+    HALT,
 
     /// Exception
     FAULT,
