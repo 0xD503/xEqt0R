@@ -8,11 +8,13 @@ struct __attribute__((packed)) Addr_s {
     uint64_t addr    : 32;
 };
 
-typedef int16_t i_mem_addr_t;
-typedef int32_t d_mem_addr_t;
-typedef struct Addr_s addr_t;
+//typedef int16_t i_mem_addr_t;
+//typedef int32_t d_mem_addr_t;
+//typedef struct Addr_s addr_t;
 typedef uint64_t word;
 typedef int64_t sword;
+typedef uint64_t instr_t;
+typedef uint64_t data_t;
 
 
 namespace arch {

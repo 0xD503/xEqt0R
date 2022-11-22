@@ -1,15 +1,23 @@
 #include "settings.hpp"
 
+#include <unistd.h>
+#include <sys/stat.h>
 
-//
-Settings::Settings(int argc, char *argv[], std::ifstream& inF, std::ofstream& outF) :
-    __status(false), __programName(argv[0]),        \
-    __instrMemInitFile(inF), __coreDumpFile(outF) {
-    __programName = argv[0];
-    __status = __handleOpts(argc, argv);
+
+using std::cout;
+using std::endl;
+
+template<typename IT>
+Settings<IT>::Settings(int argc, char *argv[], Memory<IT>& instrMem) :
+    __programName(argv[0]), __executableFileName(), __coreFileName("xeqt.dump"),
+    __instrMemInitFile(), __coreDumpFile(),
+    __instrMemory(instrMem),
+    __status(__handleOpts(argc, argv)) {
+    configure();
 }
 
-Settings::~Settings() {
+template<typename IT>
+Settings<IT>::~Settings() {
     if (__instrMemInitFile.is_open()) {
         __instrMemInitFile.close();
     }
@@ -19,30 +27,52 @@ Settings::~Settings() {
 }
 
 
-bool Settings::__handleOpts (int argc, char *argv[]) {
+template<typename IT>
+bool Settings<IT>::configure() {
+    //bool status = false;
+
+    __instrMemInitFile.open(__executableFileName, std::ios::binary);
+    //__coreDumpFile.open(__coreFileName);
+
+    //if (__instrMemInitFile.is_open() && __coreDumpFile.is_open()) {
+    if (__instrMemInitFile.is_open()) {
+        //
+
+        __status = true;
+    }
+
+    return (__status);
+}
+
+
+template<typename IT>
+bool Settings<IT>::__handleOpts (int argc, char *argv[]) {
     bool status = false;
     int opt;
 
     opterr = 0;      /// clear error flag
     if (argc > 1) {
-        while ((opt = getopt(argc, argv, "io")) != -1) {
+        while ((opt = getopt(argc, argv, "i:o:")) != -1) {
             switch (opt) {
                 case 'i': { /// instruction memory init file
-                    __instrMemInitFile.open(optarg);
-                    if (!__instrMemInitFile.is_open()) {
-                        cout << "Failed to open input file" << endl;
+                    /// Check if a given file exists
+                    struct stat statBuf;
+                    int exists = stat(optarg, &statBuf);
+                    if (exists != 0) {
+                        cout << "Failed to find file: " // << optarg
+                             << endl;
+                        goto end;
                     }
+                    __executableFileName = optarg;
                     break;
                 }
                 case 'o': { /// output core file
-                    __coreDumpFile.open(optarg);
-                    if (!__coreDumpFile.is_open()) {
-                        cout << "Failed to open output file" << endl;
-                    }
+                    /// set core file name
+                    __coreFileName = optarg;
                     break;
                 }
                 case ':': { /// missing important option
-                    cout << "Missing argument: " << static_cast<char>(optopt) \
+                    cout << "Missing argument for: " << static_cast<char>(optopt) \
                          << endl;
                     cout << endl;
                     __showUsage();
@@ -68,3 +98,8 @@ bool Settings::__handleOpts (int argc, char *argv[]) {
 end:
     return (status);
 }
+
+
+/// Explicit template instantiation. It is done in order to keep template
+/// implementation separately from its declaration
+template class Settings<word>;

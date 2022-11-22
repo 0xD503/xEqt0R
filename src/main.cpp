@@ -8,15 +8,13 @@
 int main (int argc, char *argv[])
 {
     int status = EXIT_FAILURE;
-    std::ifstream instrMemInitFile;
-    std::ofstream coreDumpFile;
 
     /// set up before starting
-    Settings settings(argc, argv, instrMemInitFile, coreDumpFile);
-    SoC<word, word, word> soc(32768, 32768);
-    if (!settings.isCorrect()) {
-        goto end;
-    }
+    // Settings settings(argc, argv);
+    // if (!settings.isCorrect()) {
+    //     goto end;
+    // }
+    SoC<word, word, word> soc(32768, 32768, argc, argv);
     // Memory<word> memory(32768);
 
     // //word temp = 0xDEADFEED;
@@ -30,13 +28,11 @@ int main (int argc, char *argv[])
     // status = memory.readWord(3, temp);
     // std::cout << "Second word: " << temp << std::endl;
 
-    soc.run();
-
-    //std::cout << "Power off..." << std::endl;
-
-    status = EXIT_SUCCESS;
+    if (soc.run() == 0) {
+        status = EXIT_SUCCESS;
+    }
 
 
-end:
+//end:
     return (status);
 }

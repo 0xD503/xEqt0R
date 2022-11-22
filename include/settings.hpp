@@ -5,38 +5,36 @@
 #include <iostream>
 
 #include <string>
-#include <unistd.h>
+
+#include "memory.hpp"
 
 
 
-using std::cout;
-using std::cerr;
-using std::endl;
-
+template<typename IT>
 class Settings {
     public:
-        explicit Settings(int argc, char *argv[], \
-                          std::ifstream& inF, std::ofstream& outF);
+        explicit Settings(int argc, char *argv[], Memory<IT>& instrMem);
         ~Settings();
 
         inline bool isCorrect() const { return (__status); }
 
+        bool configure ();
+
     private:
-        bool __status;
         std::string __programName;
-        std::ifstream& __instrMemInitFile;
-        std::ofstream& __coreDumpFile;
+        std::string __executableFileName, __coreFileName;
+        std::ifstream __instrMemInitFile;
+        std::ofstream __coreDumpFile;
+        Memory<IT>& __instrMemory;
+        bool __status;
 
     private:
-
-
         inline void __showUsage() {
-            cout << __programName << " - usage:" << endl;
-            cout << "    -i - instruction memory initialization file" << endl;
-            cout << "    -o - data memory output file" << endl;
-            cout << endl;
+            std::cout << __programName << " - usage:" << std::endl;
+            std::cout << "    -i - instruction memory initialization file" << std::endl;
+            std::cout << "    -o - data memory output file" << std::endl;
+            std::cout << std::endl;
         }
-
 
         bool __handleOpts (int argc, char *argv[]);
 };

@@ -630,7 +630,7 @@ void CPU<T, M, D>::__executeMemOp (EncodedInstruction encodedInstr, Instruction 
 
 template<typename T, typename M, typename D>
 void CPU<T, M, D>::__executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruction instr) {
-    i_mem_addr_t addr = static_cast<i_mem_addr_t>(_registerFile[encodedInstr.flowCtrlStd.addrReg].read());
+    M addr = static_cast<M>(_registerFile[encodedInstr.flowCtrlStd.addrReg].read());
 
     switch (instr) {
         case Instruction::B: {
@@ -639,7 +639,7 @@ void CPU<T, M, D>::__executeFlowCtrlOp (EncodedInstruction encodedInstr, Instruc
         }
         case Instruction::BR: {
             /// TODO:
-            addr += static_cast<i_mem_addr_t>(__getCurrentPC().read());
+            addr += static_cast<M>(__getCurrentPC().read());
             __setPC(static_cast<T>(addr));
             break;
         }
