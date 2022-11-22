@@ -1,5 +1,6 @@
 #include "settings.hpp"
 
+#include <fstream>
 #include <unistd.h>
 #include <sys/stat.h>
 
@@ -28,20 +29,39 @@ Settings<IT>::~Settings() {
 
 
 template<typename IT>
-bool Settings<IT>::configure() {
-    //bool status = false;
+bool Settings<IT>::copyBin2Buff (std::ifstream& binF, std::string fName,
+                                 Memory<IT>& mem) {
+    bool status(false);
+    std::streampos fileLen;
 
-    __instrMemInitFile.open(__executableFileName, std::ios::binary);
-    //__coreDumpFile.open(__coreFileName);
+    binF.open(fName, std::ios::binary | std::ios::ate);
+    if (binF.is_open()) {
+        fileLen = binF.tellg();    /// Check file size
+        if ((fileLen != - 1) && (fileLen <= mem.getSize())) {
+            binF.seekg(0);                      /// go to the file beginning
+            //binF.read();
+        }
+        else {
+            cout << "Failed to init instruction memory" << endl;
+        }
 
-    //if (__instrMemInitFile.is_open() && __coreDumpFile.is_open()) {
-    if (__instrMemInitFile.is_open()) {
-        //
-
-        __status = true;
+        status = true;
     }
 
-    return (__status);
+    return (status);
+}
+
+template<typename IT>
+bool Settings<IT>::configure() {
+    bool status(false);
+
+    //__instrMemInitFile.open(__executableFileName);
+
+    //if (__instrMemInitFile.is_open() && __coreDumpFile.is_open()) {
+    status = copyBin2Buff(__instrMemInitFile, __executableFileName,
+                          __instrMemory);
+
+    return (status);
 }
 
 

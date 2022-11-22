@@ -18,6 +18,8 @@ class Settings {
 
         inline bool isCorrect() const { return (__status); }
 
+        bool copyBin2Buff (std::ifstream& binF, std::string fName,
+                           Memory<IT>& buff);
         bool configure ();
 
     private:

@@ -16,6 +16,7 @@ class Memory {
 
         inline size_t getLength (void) const    { return (_length); }
         inline size_t getSize (void) const      { return (_size); }
+        inline const T *getRawPtr (void) const        { return (_memory.data()); }
 
         /// return false if failed to read
         inline bool readWord (const size_t addr, T &dest) const {
