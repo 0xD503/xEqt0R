@@ -2,6 +2,7 @@
 
 
 Make memory init from hex file
+Add BREAK instruction (break using signals)
 #Add a software requirement document
 #Add a software specification document
 1. add more visibility specifiers (pub/prot/priv)
@@ -15,6 +16,6 @@ Make memory init from hex file
 10. Add Dockerfile for test environment
 11. Add instructions cache
 12. Add peripheral interface
-13. Check with static analizer
-14. Check with dynamic analizer/profiler
+13. Check with static analyzer
+14. Check with dynamic analyzer/profiler
 15. Multicore processor using threads

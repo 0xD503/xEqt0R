@@ -18,16 +18,22 @@ enum class Instruction {
     /// FAST instructions
     MAX, MIN,
     POPCNT,
+
     /// Mem manip
     LDR, STR,
     WLDR, WSTR,             /// wide load/store (up to 256 regs)
     PUSH, POP,
+
     /// FLOW Control
     B, BR, BLX,
     CALL, RET,
     /// Other
     NOP,
     HALT,
+
+    /// Debug instructions
+    BKPT,                   /// Breakpoint
+    DBGP,                   /// debug printf
 
     /// Exception
     FAULT,

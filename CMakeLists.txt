@@ -54,8 +54,7 @@ endif()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ## flags
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Weffc++")
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Weffc++")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 #set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -Og")
@@ -107,7 +106,7 @@ include_directories(./include/)
 #)
 
 
-add_executable(xEqt0R
+add_executable(${CMAKE_PROJECT_NAME}
   ./src/main.cpp
   ./src/settings.cpp
   #./src/except.cpp
